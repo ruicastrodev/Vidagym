@@ -27,6 +27,8 @@
     .btn:hover { background: #047857; }
     .btn-secondary { background: #2563eb; color: #fff; box-shadow: 0 2px 4px rgba(37,99,235,0.2); }
     .btn-secondary:hover { background: #1d4ed8; }
+    .btn-whatsapp { background: #25d366; color: #fff; box-shadow: 0 2px 4px rgba(37,211,102,0.2); }
+    .btn-whatsapp:hover { background: #1ebd56; }
     .btn-outline { background: transparent; border: 1px solid #cbd5e1; color: #64748b; }
     .input { width: 100%; background-color: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; padding: 12px; border-radius: 10px; font-size: 13px; outline: none; margin-bottom: 12px; }
     .input:focus { border-color: #059669; background: #ffffff; }
@@ -169,7 +171,7 @@
 
       </div>
 
-      <!-- ABA 2: IA CÂMERA (COM CHAVE SEGURA) -->
+      <!-- ABA 2: IA CÂMERA -->
       <div id="tab-camera" class="tab-content hidden">
         <div class="card">
           <h3 style="font-size: 16px; margin-bottom: 8px; color: #0f172a;">📸 Leitor de Refeições por IA</h3>
@@ -233,17 +235,14 @@
         </div>
       </div>
 
-      <!-- ABA 4: SAÚDE, JEJUM, RECEITAS & TREINOS -->
+      <!-- ABA 4: SAÚDE & ROTINAS -->
       <div id="tab-health" class="tab-content hidden">
-        
-        <!-- Jejum -->
         <div class="card">
           <h3 style="font-size: 15px; margin-bottom: 8px; color: #0f172a;"><i class="fa-solid fa-clock text-purple-600"></i> Jejum Intermitente</h3>
           <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Protocolo recomendado: <strong>16 Horas de Jejum</strong></p>
-          <button onclick="alert('Cronômetro de jejum iniciado! Notificaremos quando concluir.')" class="btn btn-secondary" style="padding: 12px; font-size: 13px;">Iniciar Cronômetro (16h)</button>
+          <button onclick="alert('Cronômetro de jejum iniciado!')" class="btn btn-secondary" style="padding: 12px; font-size: 13px;">Iniciar Cronômetro (16h)</button>
         </div>
 
-        <!-- Receitas / Cardápio Anual -->
         <div class="card">
           <h3 style="font-size: 15px; margin-bottom: 8px; color: #0f172a;"><i class="fa-solid fa-utensils text-emerald-600"></i> Cardápio & Receitas Práticas</h3>
           <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Acesse sugestões simples e acessíveis para o ano todo:</p>
@@ -253,56 +252,54 @@
             <p style="font-weight: bold; color: #059669; margin-bottom: 6px;">🍽️ Sugestões da Semana:</p>
             <ul style="font-size: 12px; color: #334155; padding-left: 16px; line-height: 1.5;">
               <li><strong>Café:</strong> Ovos mexidos + café preto ou com leite desnatado.</li>
-              <li><strong>Almoço:</strong> Arroz integral, feijão, frango desfiado ou grelhado e salada verde.</li>
+              <li><strong>Almoço:</strong> Arroz integral, feijão, frango desfiado e salada verde.</li>
               <li><strong>Lanche:</strong> Iogurte natural com aveia e frutas.</li>
-              <li><strong>Jantar:</strong> Sopa de legumes com carne ou omelete recheado.</li>
+              <li><strong>Jantar:</strong> Sopa de legumes ou omelete recheado.</li>
             </ul>
           </div>
         </div>
 
-        <!-- Treinos com Vídeos do YouTube -->
         <div class="card">
           <h3 style="font-size: 15px; margin-bottom: 8px; color: #0f172a;"><i class="fa-solid fa-dumbbell text-rose-600"></i> Rotina de Treinos</h3>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Treinos práticos guiados em vídeo para fazer em casa:</p>
           <div style="display: flex; flex-direction: column; gap: 10px;">
             <a href="https://youtu.be/QXe7raCu-8g?is=OokLV68eRYQUjPy4" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 12px; font-size: 13px; text-align: center;">▶️ Assistir Treino Prático 1</a>
             <a href="https://youtu.be/mGQ_8OWow_A?is=qfCrtUxQSbA3cDzm" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 12px; font-size: 13px; text-align: center;">▶️ Assistir Treino Prático 2</a>
           </div>
         </div>
 
-        <!-- Playlists do YouTube -->
         <div class="card">
           <h3 style="font-size: 15px; margin-bottom: 8px; color: #0f172a;"><i class="fa-solid fa-music text-amber-600"></i> Playlists Motivacionais</h3>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Músicas energizantes para o seu treino e foco diário:</p>
           <div style="display: flex; flex-direction: column; gap: 10px;">
             <a href="https://youtu.be/WKJzSkpdf1g?is=naR2Icw0paydcuLX" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 12px; font-size: 13px; text-align: center;">🎵 Playlist Foco & Treino</a>
             <a href="https://youtu.be/L8uBuwTYrJ8?is=eF_nPEWX--_4ZsPN" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 12px; font-size: 13px; text-align: center;">🎵 Playlist Motivacional</a>
           </div>
         </div>
-
       </div>
 
-      <!-- ABA 5: DESAFIOS EM EQUIPE -->
+      <!-- ABA 5: DESAFIOS EM EQUIPE (CORRIGIDA E COMPLETA) -->
       <div id="tab-challenge" class="tab-content hidden">
-        <div class="card">
-          <h3 style="font-size: 16px; margin-bottom: 8px; color: #0f172a;">👥 Desafio em Equipe</h3>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">Convide um amigo para o desafio de 7 dias e conquistem juntos!</p>
+        
+        <!-- DESAFIO OFICIAL PRÉ-PROGRAMADO -->
+        <div class="card" style="border: 2px solid #059669;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="font-size: 16px; color: #0f172a;">🏆 Desafio Oficial: 7 Dias Fit</h3>
+            <span style="background: #fbbf24; color: #000; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px;">+200 Moedas</span>
+          </div>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Cumpra 7 dias seguidos de treinos e água para resgatar a recompensa da dupla!</p>
 
-          <button onclick="generateInviteLink()" class="btn btn-secondary" style="margin-bottom: 14px; padding: 12px; font-size: 13px;">🔗 Gerar Link de Convite</button>
-
-          <div id="invite-box" class="modal hidden" style="font-size: 12px; color: #059669; word-break: break-all; font-weight: bold;">
-            vidagym.app/desafio?convite=ruiSousa99
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 10px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+              <span>Progresso da Equipe:</span>
+              <strong id="official-days-text" style="color: #059669;">Dia 1 de 7</strong>
+            </div>
+            <div style="width: 100%; background: #cbd5e1; height: 8px; border-radius: 4px; overflow: hidden;">
+              <div id="official-progress-bar" style="width: 14%; background: #059669; height: 100%;"></div>
+            </div>
           </div>
 
-          <div class="modal">
-            <p style="font-weight: bold; color: #0f172a; margin-bottom: 4px;">Status da Equipe:</p>
-            <p style="color: #64748b; font-size: 13px; margin-top: 4px;"><span id="challenge-user-name">Rui</span>: <span style="color: #059669; font-weight: bold;">✔ Concluído hoje</span></p>
-            <p style="color: #64748b; font-size: 13px;">Convidado(a): <span style="color: #d97706; font-weight: bold;">⏳ Pendente</span></p>
-          </div>
+          <button onclick="advanceOfficialChallenge()" class="btn" style="padding: 12px; font-size: 13px;">✔ Concluir Treino de Hoje (+28 Moedas)</button>
         </div>
-      </div>
 
-    </div>
-
-    <!-- NAVEGAÇÃO INFERIOR -->
-    <nav class="nav-
+        <!-- CRIAR DESAFIO PERSONALIZADO -->
+        <div class="card">
+          <h3 sty
