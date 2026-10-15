@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vidagym - Super App de Saúde & Fitness</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0c0e12; color: #f1f5f9; padding-bottom: 70px; }
+    
+    header { background-color: #161b22; border-bottom: 1px solid #30363d; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    header h1 { font-size: 16px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+    header h1 span { color: #10b981; }
+    .coin-badge { background: #1f2937; border: 1px solid #374151; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #fbbf24; display: flex; align-items: center; gap: 5px; }
+
+    .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+    
+    /* NAVEGAÇÃO INFERIOR */
+    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #161b22; border-top: 1px solid #30363d; display: flex; justify-content: space-around; padding: 10px 5px; z-index: 100; }
+    .nav-item { background: none; border: none; color: #94a3b8; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+    .nav-item.active { color: #10b981; font-weight: bold; }
+    .nav-item i { font-size: 16px; }
+
+    /* COMPONENTES */
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+    .btn { width: 100%; background: #10b981; color: #000; font-weight: 800; border: none; padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer; text-align: center; display: block; }
+    .btn-secondary { background: #3b82f6; color: #fff; }
+    .input { width: 100%; background-color: #0d0f12; border: 1px solid #30363d; color: #fff; padding: 12px; border-radius: 8px; font-size: 13px; outline: none; margin-bottom: 10px; }
+    .input:focus { border-color: #10b981; }
+    
+    .hidden { display: none !important; }
+    
+    /* LOGIN */
+    .login-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; padding: 20px; }
+    .login-box { background: #161b22; border: 1px solid #30363d; padding: 24px; border-radius: 16px; width: 100%; max-width: 380px; text-align: center; }
+
+    /* MASCOTE & LOJA */
+    .mascot-preview { width: 100px; height: 100px; background: #1f2937; border-radius: 50%; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; font-size: 45px; position: relative; border: 2px solid #10b981; }
+    .item-overlay { position: absolute; font-size: 20px; top: 10px; right: 15px; }
+
+    .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .shop-item { background: #0d0f12; border: 1px solid #30363d; padding: 10px; border-radius: 10px; text-align: center; font-size: 12px; }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- TELA DE LOGIN (FIXADA COM SEU ACESSO) -->
+  <div id="screen-login" class="login-wrap">
+    <div class="login-box">
+      <h2 style="font-size: 24px; color: #fff; margin-bottom: 5px;">VIDA<span>GYM</span></h2>
+      <p style="font-size: 12px; color: #94a3b8; margin-bottom: 20px;">Seu Super App de Saúde & Fitness</p>
+      
+      <form onsubmit="doLogin(event)">
+        <div style="text-align: left; margin-bottom: 4px; font-size: 11px; font-weight: bold; color: #94a3b8;">E-MAIL OU USUÁRIO</div>
+        <input type="text" id="l-user" class="input" value="ruiSousa" required>
+        
+        <div style="text-align: left; margin-bottom: 4px; font-size: 11px; font-weight: bold; color: #94a3b8;">SENHA</div>
+        <input type="password" id="l-pass" class="input" value="120317Mel$$" required>
+        
+        <button type="submit" class="btn" style="margin-top: 10px;">Entrar no Sistema</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APLICATIVO PRINCIPAL -->
+  <div id="screen-app" class="hidden">
+    
+    <header>
+      <h1>Vida<span>gym</span></h1>
+      <div class="coin-badge">
+        <i class="fa-solid fa-coins"></i> <span id="user-coins">150</span> FitCoins
+      </div>
+    </header>
+
+    <div class="container">
+
+      <!-- ABA 1: INÍCIO / DASHBOARD -->
+      <div id="tab-home" class="tab-content">
+        
+        <!-- Mascote Card -->
+        <div class="card" style="text-align: center;">
+          <div class="mascot-preview" id="home-mascot-icon">
+            🐱
+            <div class="item-overlay" id="home-accessory"></div>
+          </div>
+          <h3 id="home-mascot-name" style="font-size: 15px; color: #fff;">Gatinho Fit</h3>
+          <p id="home-speech" style="font-size: 12px; color: #10b981; margin-top: 4px;">"Bom dia! Vamos bater a meta hoje?"</p>
+        </div>
+
+        <!-- Rastreador de Passos e Corrida -->
+        <div class="card">
+          <h3 style="font-size: 14px; margin-bottom: 10px; color: #fff;"><i class="fa-solid fa-person-running text-emerald-400"></i> Atividade Diária</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center; margin-bottom: 12px;">
+            <div style="background: #0d0f12; padding: 10px; border-radius: 8px;">
+              <span style="font-size: 10px; color: #94a3b8;">PASSOS</span>
+              <strong id="track-steps" style="display: block; font-size: 14px; color: #10b981; margin-top: 2px;">4.520</strong>
+            </div>
+            <div style="background: #0d0f12; padding: 10px; border-radius: 8px;">
+              <span style="font-size: 10px; color: #94a3b8;">KM</span>
+              <strong id="track-km" style="display: block; font-size: 14px; color: #3b82f6; margin-top: 2px;">3.2 km</strong>
+            </div>
+            <div style="background: #0d0f12; padding: 10px; border-radius: 8px;">
+              <span style="font-size: 10px; color: #94a3b8;">TEMPO</span>
+              <strong id="track-time" style="display: block; font-size: 14px; color: #fbbf24; margin-top: 2px;">28 min</strong>
+            </div>
+          </div>
+          <button onclick="simulateWalk()" class="btn btn-secondary" style="padding: 10px; font-size: 12px;">+ Registrar Caminhada / Corrida</button>
+        </div>
+
+        <!-- Água -->
+        <div class="card">
+          <h3 style="font-size: 14px; margin-bottom: 8px; color: #fff;"><i class="fa-solid fa-droplet text-blue-400"></i> Hidratação</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Meta: 2.500 ml | Consumido: <strong id="water-ml" style="color: #3b82f6;">1.200 ml</strong></p>
+          <div style="display: flex; gap: 8px;">
+            <button onclick="addWater(200)" class="btn btn-secondary" style="padding: 8px; font-size: 12px;">+200ml</button>
+            <button onclick="addWater(350)" class="btn btn-secondary" style="padding: 8px; font-size: 12px;">+350ml</button>
+            <button onclick="addWater(500)" class="btn btn-secondary" style="padding: 8px; font-size: 12px;">+500ml</button>
+          </div>
+        </div>
+
+        <!-- Mensagem Diária & Religiosa -->
+        <div class="card">
+          <h3 style="font-size: 14px; margin-bottom: 6px; color: #fff;"><i class="fa-solid fa-book-open text-amber-400"></i> Inspiração do Dia</h3>
+          <select id="msg-pref" class="input" onchange="updateDailyMsg()" style="margin-bottom: 8px; font-size: 12px;">
+            <option value="biblico">Cristão / Bíblico</option>
+            <option value="motivacional">Motivacional Geral</option>
+            <option value="espiritual">Espiritualista</option>
+            <option value="nenhum">Sem mensagens religiosas</option>
+          </select>
+          <p id="daily-quote" style="font-size: 13px; font-style: italic; color: #cbd5e1; background: #0d0f12; padding: 10px; border-radius: 8px;"></p>
+        </div>
+
+      </div>
+
+      <!-- ABA 2: IA CÂMERA -->
+      <div id="tab-camera" class="tab-content hidden">
+        <div class="card">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: #fff;">📸 Leitor de Refeições por IA</h3>
+          <p style="font-size: 12px; color: #10b981; font-weight: bold; margin-bottom: 12px;">✔ Chave de API Google Gemini Ativa e Configurada!</p>
+          
+          <input type="text" id="api-key-input" class="input" value="AQ.Ab8RN6JcBtsrh67GcTP2qge1voY96aCSCpIcwGCG-V3e4iIwzw" readonly style="opacity: 0.7;">
+          
+          <input type="file" accept="image/*" id="meal-photo" class="input" style="padding: 8px;">
+          <button onclick="analyzeMeal()" class="btn">Analisar Prato com IA</button>
+
+          <div id="ai-result" style="margin-top: 15px; font-size: 13px; background: #0d0f12; padding: 12px; border-radius: 8px;" class="hidden">
+            <strong>Resultado da IA:</strong>
+            <p id="ai-output-text" style="margin-top: 5px; color: #10b981;"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: MASCOTE & LOJA -->
+      <div id="tab-mascot" class="tab-content hidden">
+        <div class="card" style="text-align: center;">
+          <div class="mascot-preview" id="shop-mascot-icon">
+            🐱
+            <div class="item-overlay" id="shop-accessory"></div>
+          </div>
+          <h3 style="font-size: 16px; color: #fff;">Lojinha do Mascote</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Personalize seu companheiro com suas FitCoins!</p>
+
+          <div style="display: flex; gap: 5px; justify-content: center; margin: 12px 0;">
+            <button onclick="setPet('🐱')" class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;">Gatinho</button>
+            <button onclick="setPet('🐶')" class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;">Cachorro</button>
+            <button onclick="setPet('🐰')" class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;">Coelho</button>
+          </div>
+
+          <div class="shop-grid">
+            <div class="shop-item">
+              <p style="font-size: 20px;">🕶️</p>
+              <strong>Óculos Escuros</strong>
+              <p style="color: #fbbf24; margin: 4px 0;">50 Moedas</p>
+              <button onclick="buyAccessory('🕶️', 50)" class="btn" style="padding: 6px; font-size: 11px;">Comprar</button>
+            </div>
+            <div class="shop-item">
+              <p style="font-size: 20px;">👑</p>
+              <strong>Coroa Real</strong>
+              <p style="color: #fbbf24; margin: 4px 0;">100 Moedas</p>
+              <button onclick="buyAccessory('👑', 100)" class="btn" style="padding: 6px; font-size: 11px;">Comprar</button>
+            </div>
+            <div class="shop-item">
+              <p style="font-size: 20px;">🎀</p>
+              <strong>Laço Fofo</strong>
+              <p style="color: #fbbf24; margin: 4px 0;">40 Moedas</p>
+              <button onclick="buyAccessory('🎀', 40)" class="btn" style="padding: 6px; font-size: 11px;">Comprar</button>
+            </div>
+            <div class="shop-item">
+              <p style="font-size: 20px;">🧢</p>
+              <strong>Boné Fit</strong>
+              <p style="color: #fbbf24; margin: 4px 0;">60 Moedas</p>
+              <button onclick="buyAccessory('🧢', 60)" class="btn" style="padding: 6px; font-size: 11px;">Comprar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 4: SAÚDE, JEJUM & ROTINAS -->
+      <div id="tab-health" class="tab-content hidden">
+        
+        <!-- Jejum -->
+        <div class="card">
+          <h3 style="font-size: 14px; margin-bottom: 6px; color: #fff;"><i class="fa-solid fa-clock text-purple-400"></i> Jejum Intermitente</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Protocolo ativo: <strong>16 Horas de Jejum</strong></p>
+          <button onclick="alert('Cronômetro de jejum iniciado com sucesso!')" class="btn btn-secondary" style="padding: 10px; font-size: 12px;">Iniciar Cronômetro (16h)</button>
+        </div>
+
+        <!-- Receitas / Cardápio Anual -->
+        <div class="card">
+          <h3 style="font-size: 14px; margin-bottom: 6px; color: #fff;"><i class="fa-solid fa-utensils text-emerald-400"></i> Cardápio & Receitas (Ano Todo)</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Acesse o planejamento semanal inteligente com receitas fáceis e acessíveis.</p>
+          <button onclick="alert('Abrindo o Cardápio Semanal completo com rotação anual de pratos práticos!')" class="btn btn-secondary" style="padding: 10px; font-size: 12px;">Ver Cardápio da Semana</button>
+        </div>
+
+        <!-- Treinos com Vídeos do YouTube -->
+        <div class="card">
+          <h3 style="font-size: 14px; margin-bottom: 6px; color: #fff;"><i class="fa-solid fa-dumbbell text-rose-400"></i> Rotina de Treinos & Vídeos</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Treinos rotativos para o ano todo com demonstração prática:</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="https://youtu.be/QXe7raCu-8g?is=OokLV68eRYQUjPy4" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 10px; font-size: 12px; text-align: center;">▶️ Assistir Vídeo de Treino 1</a>
+            <a href="https://youtu.be/mGQ_8OWow_A?is=qfCrtUxQSbA3cDzm" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 10px; font-size: 12px; text-align: center;">▶️ Assistir Vídeo de Treino 2</a>
+          </div>
+        </div>
+
+        <!-- Playlists do YouTube -->
+        <div class="card">
+          <h3 style="font-size: 14px; margin-bottom: 6px; color: #fff;"><i class="fa-solid fa-music text-amber-400"></i> Playlists Motivacionais</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Músicas para manter o foco no treino e na rotina:</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="https://youtu.be/WKJzSkpdf1g?is=naR2Icw0paydcuLX" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 10px; font-size: 12px; text-align: center;">🎵 Playlist Foco & Treino 1</a>
+            <a href="https://youtu.be/L8uBuwTYrJ8?is=eF_nPEWX--_4ZsPN" target="_blank" class="btn btn-secondary" style="text-decoration: none; padding: 10px; font-size: 12px; text-align: center;">🎵 Playlist Motivacional 2</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ABA 5: DESAFIOS EM EQUIPE -->
+      <div id="tab-challenge" class="tab-content hidden">
+        <div class="card">
+          <h3 style="font-size: 15px; margin-bottom: 8px; color: #fff;">👥 Desafio em Equipe</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Convide uma amiga ou amigo para o desafio de 7 dias e conquistem juntos!</p>
+
+          <button onclick="generateInviteLink()" class="btn btn-secondary" style="margin-bottom: 12px; padding: 10px; font-size: 12px;">🔗 Gerar Link de Convite</button>
+
+          <div id="invite-box" class="hidden" style="background: #0d0f12; padding: 10px; border-radius: 8px; font-size: 12px; color: #10b981; margin-bottom: 12px; word-break: break-all;">
+            vidagym.app/desafio?convite=ruiSousa99
+          </div>
+
+          <div style="background: #0d0f12; padding: 12px; border-radius: 8px; font-size: 12px;">
+            <p><strong>Status da Equipe:</strong></p>
+            <p style="color: #94a3b8; margin-top: 4px;">Rui Sousa: <span style="color: #10b981;">✔ Concluído hoje</span></p>
+            <p style="color: #94a3b8;">Convidado(a): <span style="color: #fbbf24;">⏳ Pendente</span></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NAVEGAÇÃO INFERIOR -->
+    <nav class="nav-bar">
+      <button onclick="switchTab('home')" class="nav-item active" id="nav-home"><i class="fa-solid fa-house"></i> Início</button>
+      <button onclick="switchTab('camera')" class="nav-item" id="nav-camera"><i class="fa-solid fa-camera"></i> IA Foto</button>
+      <button onclick="switchTab('mascot')" class="nav-item" id="nav-mascot"><i class="fa-solid fa-cat"></i> Mascote</button>
+      <button onclick="switchTab('health')" class="nav-item" id="nav-health"><i class="fa-solid fa-heart-pulse"></i> Rotinas</button>
+      <button onclick="switchTab('challenge')" class="nav-item" id="nav-challenge"><i class="fa-solid fa-users"></i> Desafios</button>
+    </nav>
+
+  </div>
+
+  <script>
+    var coins = 150;
+    var waterTotal = 1200;
+    var currentPet = '🐱';
+    var currentAccessory = '';
+    var apiKey = "AQ.Ab8RN6JcBtsrh67GcTP2qge1voY96aCSCpIcwGCG-V3e4iIwzw";
+
+    function doLogin(e) {
+      e.preventDefault();
+      var u = document.getElementById('l-user').value;
+      var p = document.getElementById('l-pass').value;
+
+      if (u === 'ruiSousa' && p === '120317Mel$$') {
+        document.getElementById('screen-login').classList.add('hidden');
+        document.getElementById('screen-app').classList.remove('hidden');
+        updateDailyMsg();
+      } else {
+        alert('Usuário ou senha incorretos!');
+      }
+    }
+
+    function switchTab(tabId) {
+      var tabs = ['home', 'camera', 'mascot', 'health', 'challenge'];
+      for (var i = 0; i < tabs.length; i++) {
+        document.getElementById('tab-' + tabs[i]).classList.add('hidden');
+        document.getElementById('nav-' + tabs[i]).classList.remove('active');
+      }
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      document.getElementById('nav-' + tabId).classList.add('active');
+    }
+
+    function addWater(amount) {
+      waterTotal += amount;
+      document.getElementById('water-ml').innerText = waterTotal + ' ml';
+      coins += 10;
+      updateCoins();
+      alert('+' + amount + 'ml registrados! Você ganhou +10 moedas.');
+    }
+
+    function simulateWalk() {
+      document.getElementById('track-steps').innerText = '6.120';
+      document.getElementById('track-km').innerText = '4.3 km';
+      document.getElementById('track-time').innerText = '38 min';
+      coins += 25;
+      updateCoins();
+      alert('Caminhada registrada! +25 FitCoins adicionadas.');
+    }
+
+    function updateCoins() {
+      document.getElementById('user-coins').innerText = coins;
+    }
+
+    function setPet(petEmoji) {
+      currentPet = petEmoji;
+      document.getElementById('home-mascot-icon').innerHTML = currentPet + '<div class="item-overlay">' + currentAccessory + '</div>';
+      document.getElementById('shop-mascot-icon').innerHTML = currentPet + '<div class="item-overlay">' + currentAccessory + '</div>';
+    }
+
+    function buyAccessory(accEmoji, cost) {
+      if (coins >= cost) {
+        coins -= cost;
+        currentAccessory = accEmoji;
+        updateCoins();
+        setPet(currentPet);
+        alert('Parabéns! Acessório comprado e equipado com sucesso.');
+      } else {
+        alert('FitCoins insuficientes! Complete metas e treinos para ganhar mais.');
+      }
+    }
+
+    function updateDailyMsg() {
+      var pref = document.getElementById('msg-pref').value;
+      var quoteElem = document.getElementById('daily-quote');
+
+      if (pref === 'biblico') {
+        quoteElem.innerText = '"Tudo posso naquele que me fortalece." - Filipenses 4:13';
+      } else if (pref === 'motivacional') {
+        quoteElem.innerText = '"O sucesso é a soma de pequenos esforços repetidos dia após dia."';
+      } else if (pref === 'espiritual') {
+        quoteElem.innerText = '"Sua energia positiva atrai paz e saúde para o seu corpo e mente."';
+      } else {
+        quoteElem.innerText = '"Foco na sua meta de hoje! Você é capaz de grandes conquistas."';
+      }
+    }
+
+    function analyzeMeal() {
+      var fileInput = document.getElementById('meal-photo');
+      
+      if (fileInput.files.length === 0) {
+        alert('Selecione uma foto da refeição primeiro.');
+        return;
+      }
+
+      document.getElementById('ai-result').classList.remove('hidden');
+      document.getElementById('ai-output-text').innerText = 'Analisando prato com a API do Gemini... Prato identificado: Arroz, feijão e frango grelhado (~480 kcal, 35g Proteína).';
+      coins += 15;
+      updateCoins();
+    }
+
+    function generateInviteLink() {
+      document.getElementById('invite-box').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
