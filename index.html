@@ -1,619 +1,1592 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full bg-slate-50">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Vidagym - Saúde, Treinos e Nutrição</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #f8fafc; color: #0f172a; padding-bottom: 75px; min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vidagym - Saúde, Fitness e Painel Admin</title>
 
-    /* NOTIFICAÇÃO IFOOD STYLE */
-    #push-notification-banner {
-      position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-      width: 92%; max-width: 440px; background: #ffffff; border-left: 5px solid #10b981;
-      border-radius: 12px; padding: 12px 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      z-index: 9999; transition: top 0.5s ease-in-out; display: flex; align-items: center; gap: 12px;
-    }
-    #push-notification-banner.show { top: 15px; }
-    .push-icon { background: #ecfdf5; color: #10b981; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-    .push-content { flex: 1; }
-    .push-title { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
-    .push-body { font-size: 11px; color: #475569; line-height: 1.3; }
-
-    /* CONTAINER PRINCIPAL */
-    .app-container { max-width: 480px; margin: 0 auto; background: #ffffff; min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
-
-    /* LOGIN & CADASTRO */
-    .auth-container { padding: 30px 24px; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; text-align: center; }
-    .brand-logo { font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 4px; letter-spacing: -1px; }
-    .brand-logo span { color: #10b981; }
-    .brand-sub { font-size: 13px; color: #64748b; margin-bottom: 30px; }
-
-    .auth-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 16px; }
-    .auth-card h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 14px; }
-
-    .form-group { margin-bottom: 12px; text-align: left; }
-    .form-group label { display: block; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
-    .form-input { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; padding: 12px; border-radius: 10px; font-size: 13px; outline: none; }
-    .form-input:focus { border-color: #10b981; background: #ffffff; }
-
-    .btn-primary { width: 100%; background: #10b981; color: #ffffff; font-weight: 800; border: none; padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s; }
-    .btn-primary:hover { background: #059669; }
-    .btn-secondary { width: 100%; background: #f1f5f9; color: #475569; font-weight: 700; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; font-size: 13px; cursor: pointer; margin-top: 8px; }
-
-    /* CABEÇALHO DO APP */
-    .app-header { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; sticky: top; top: 0; z-index: 100; }
-    .user-welcome { font-size: 14px; font-weight: 800; color: #0f172a; }
-    .user-coins { background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
-
-    /* NAVEGAÇÃO SUPERIOR (ABAS) */
-    .nav-tabs { display: flex; background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 4px; overflow-x: auto; }
-    .nav-tab { flex: 1; text-align: center; padding: 10px 6px; font-size: 11px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; white-space: nowrap; }
-    .nav-tab.active { background: #ffffff; color: #10b981; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .nav-tab.admin-tab { color: #8b5cf6; }
-    .nav-tab.admin-tab.active { color: #7c3aed; }
-
-    /* SEÇÕES DO APP */
-    .app-content { padding: 20px; }
-    .section-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-    .card-title { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .card-title i { color: #10b981; }
-
-    /* PAINEL ADMIN STYLES */
-    .admin-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    .admin-stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; }
-    .admin-stat-num { font-size: 20px; font-weight: 900; color: #7c3aed; }
-    .admin-stat-label { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; }
-
-    .admin-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
-    .admin-table th, .admin-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
-    .admin-table th { background: #f8fafc; color: #475569; font-weight: 800; }
-
-    /* CÂMERA DE PRATOS IA */
-    .photo-preview-box { width: 100%; height: 180px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; cursor: pointer; position: relative; overflow: hidden; margin-bottom: 12px; }
-    .photo-preview-box img { width: 100%; height: 100%; object-fit: cover; }
-
-    /* LOJA MASCOTE */
-    .mascot-display { text-align: center; padding: 20px; background: #ecfdf5; border-radius: 16px; margin-bottom: 16px; }
-    .mascot-avatar { font-size: 64px; margin-bottom: 8px; }
-    .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .shop-item { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; }
-
-    /* MODAL */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-    .modal-card { background: #ffffff; border-radius: 16px; width: 100%; max-width: 400px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body>
-
-  <!-- BANNER NOTIFICAÇÃO IFOOD STYLE -->
-  <div id="push-notification-banner">
-    <div class="push-icon"><i class="fa-solid fa-bell"></i></div>
-    <div class="push-content">
-      <div class="push-title" id="push-title-text">Aviso Vidagym</div>
-      <div class="push-body" id="push-body-text">Mensagem motivacional ou promoção para você!</div>
-    </div>
-  </div>
-
-  <div class="app-container">
-
-    <!-- TELA DE AUTENTICAÇÃO -->
-    <div id="auth-screen" class="auth-container">
-      <div class="brand-logo">Vida<span>gym</span></div>
-      <div class="brand-sub">Sua plataforma de Treino, Nutrição e Hábitos</div>
-
-      <!-- FORMULÁRIO DE LOGIN -->
-      <div id="login-box" class="auth-card">
-        <h3>Entrar na sua conta</h3>
-        <form onsubmit="handleLogin(event)">
-          <div class="form-group">
-            <label>Usuário ou E-mail</label>
-            <input type="text" id="login-user" class="form-input" placeholder="Digite seu usuário ou e-mail" required>
-          </div>
-          <div class="form-group">
-            <label>Senha de Acesso</label>
-            <input type="password" id="login-pass" class="form-input" placeholder="Digite sua senha" required>
-          </div>
-          <button type="submit" class="btn-primary">Entrar no Aplicativo</button>
-        </form>
-      </div>
-
-      <!-- BOTÃO / ÁREA PARA CRIAR CONTA -->
-      <div id="register-box-trigger" class="auth-card" style="text-align: center;">
-        <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Ainda não possui uma conta?</p>
-        <button type="button" onclick="showRegisterForm()" class="btn-secondary">Criar uma Conta de Cliente</button>
-      </div>
-
-      <!-- FORMULÁRIO DE REGISTRO DE NOVO ALUNO -->
-      <div id="register-box" class="auth-card hidden">
-        <h3>Cadastro de Novo Aluno</h3>
-        <form onsubmit="handleRegister(event)">
-          <div class="form-group">
-            <label>Nome Completo</label>
-            <input type="text" id="reg-fullname" class="form-input" placeholder="Ex: Maria Silva" required>
-          </div>
-          <div class="form-group">
-            <label>Telefone / WhatsApp</label>
-            <input type="tel" id="reg-phone" class="form-input" placeholder="(21) 99999-9999" required>
-          </div>
-          <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" id="reg-email" class="form-input" placeholder="maria@email.com" required>
-          </div>
-          <div class="form-group">
-            <label>Nome de Usuário</label>
-            <input type="text" id="reg-user" class="form-input" placeholder="mariasilva" required>
-          </div>
-          <div class="form-group">
-            <label>Senha de Acesso</label>
-            <input type="password" id="reg-pass" class="form-input" placeholder="Crie sua senha" required>
-          </div>
-          <button type="submit" class="btn-primary">Finalizar Cadastro</button>
-          <button type="button" onclick="showLoginForm()" class="btn-secondary">Voltar ao Login</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- TELA PRINCIPAL DO APLICATIVO -->
-    <div id="app-screen" class="hidden">
-      
-      <!-- CABEÇALHO -->
-      <div class="app-header">
-        <div class="user-welcome">Olá, <span id="user-display-name">Aluno</span>! 👋</div>
-        <div class="user-coins"><i class="fa-solid fa-coins"></i> <span id="user-coin-balance">150</span> FitCoins</div>
-        <button onclick="handleLogout()" style="background: none; border: none; color: #94a3b8; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-right-from-bracket"></i></button>
-      </div>
-
-      <!-- BARRA DE NAVEGAÇÃO DAS ABAS -->
-      <div class="nav-tabs">
-        <div class="nav-tab active" onclick="switchTab('home')">Início</div>
-        <div class="nav-tab" onclick="switchTab('ai-photo')">IA Pratos</div>
-        <div class="nav-tab" onclick="switchTab('mascot')">Mascote</div>
-        <div class="nav-tab" onclick="switchTab('routines')">Rotinas</div>
-        <div class="nav-tab" onclick="switchTab('challenges')">Desafios</div>
-        <div id="tab-admin-btn" class="nav-tab admin-tab hidden" onclick="switchTab('admin')">👑 Admin</div>
-      </div>
-
-      <!-- CONTEÚDO DAS ABAS -->
-      <div class="app-content">
-
-        <!-- ABA 1: INÍCIO -->
-        <div id="tab-home" class="tab-page">
-          <div class="section-card">
-            <div class="card-title"><i class="fa-solid fa-person-walking"></i> Atividades de Hoje</div>
-            <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Registre suas caminhadas e ganhe FitCoins automaticamente!</p>
-            <button onclick="addFitCoins(20, 'Caminhada diária realizada!')" class="btn-primary">+ Registrar Caminhada (+20 FitCoins)</button>
-          </div>
-        </div>
-
-        <!-- ABA 2: IA PRATOS (ANÁLISE DE ALIMENTAÇÃO) -->
-        <div id="tab-ai-photo" class="tab-page hidden">
-          <div class="section-card">
-            <div class="card-title"><i class="fa-solid fa-camera"></i> Análise de Refeição por IA</div>
-            <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Tire uma foto do seu prato para receber um diagnóstico nutricional instantâneo.</p>
-
-            <div class="photo-preview-box" onclick="document.getElementById('plate-image-input').click()">
-              <div id="upload-placeholder" style="text-align: center; color: #94a3b8;">
-                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; margin-bottom: 6px;"></i>
-                <div style="font-size: 11px; font-weight: 700;">Clique para Selecionar ou Tirar Foto</div>
-              </div>
-              <img id="plate-image-preview" class="hidden" alt="Prato de comida">
-            </div>
-            <input type="file" id="plate-image-input" accept="image/*" class="hidden" onchange="previewPlateImage(event)">
-
-            <button onclick="analyzePlateWithAI()" class="btn-primary">Analisar Prato com IA Gemini</button>
-
-            <div id="ai-result-box" class="section-card hidden" style="margin-top: 12px; background: #f0fdf4; border-color: #a7f3d0;">
-              <div style="font-size: 12px; font-weight: 800; color: #059669; margin-bottom: 4px;">Resultado da Análise:</div>
-              <div id="ai-result-text" style="font-size: 12px; color: #166534; line-height: 1.4;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ABA 3: MASCOTE & LOJINHA -->
-        <div id="tab-mascot" class="tab-page hidden">
-          <div class="mascot-display">
-            <div class="mascot-avatar" id="mascot-emoji">🐱</div>
-            <div style="font-size: 14px; font-weight: 800; color: #065f46;" id="mascot-name">Gatinho Fit</div>
-          </div>
-          <div class="card-title"><i class="fa-solid fa-store"></i> Lojinha do Mascote</div>
-          <div class="shop-grid" id="shop-items-container">
-            <!-- Itens gerados dinamicamente via JS -->
-          </div>
-        </div>
-
-        <!-- ABA 4: ROTINAS, CARDÁPIOS & PLAYLISTS -->
-        <div id="tab-routines" class="tab-page hidden">
-          <div class="section-card">
-            <div class="card-title"><i class="fa-solid fa-utensils"></i> Cardápios & Receitas</div>
-            <div id="recipes-list-container"></div>
-          </div>
-
-          <div class="section-card">
-            <div class="card-title"><i class="fa-solid fa-music"></i> Playlists & Vídeos de Treino</div>
-            <div id="playlists-list-container"></div>
-          </div>
-        </div>
-
-        <!-- ABA 5: DESAFIOS EM EQUIPE -->
-        <div id="tab-challenges" class="tab-page hidden">
-          <div class="section-card">
-            <div class="card-title"><i class="fa-solid fa-trophy"></i> Desafio Oficial 7 Dias Fit</div>
-            <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Complete 7 dias de atividades e ganhe 200 FitCoins Bônus!</p>
-            <button onclick="addFitCoins(200, 'Desafio 7 Dias Fit Concluído!')" class="btn-primary">Concluir Desafio (+200 FitCoins)</button>
-          </div>
-        </div>
-
-        <!-- ABA 6: PAINEL ADMINISTRATIVO (EXCLUSIVO) -->
-        <div id="tab-admin" class="tab-page hidden">
-          <div class="section-card" style="border-color: #c084fc;">
-            <div class="card-title" style="color: #7c3aed;"><i class="fa-solid fa-crown"></i> Painel de Controle Admin</div>
-            
-            <div class="admin-stat-grid">
-              <div class="admin-stat-card">
-                <div class="admin-stat-num" id="admin-stat-users">1</div>
-                <div class="admin-stat-label">Alunos</div>
-              </div>
-              <div class="admin-stat-card">
-                <div class="admin-stat-num" id="admin-stat-recipes">2</div>
-                <div class="admin-stat-label">Receitas</div>
-              </div>
-            </div>
-
-            <!-- DISPARAR NOTIFICAÇÃO IFOOD STYLE -->
-            <div style="background: #fdf4ff; border: 1px solid #f0abfc; border-radius: 12px; padding: 12px; margin-bottom: 16px;">
-              <div style="font-size: 12px; font-weight: 800; color: #86198f; margin-bottom: 8px;">🔔 Disparar Notificação Pop-up (iFood Style)</div>
-              <input type="text" id="push-title-input" class="form-input" placeholder="Título da Notificação" style="margin-bottom: 6px;">
-              <textarea id="push-body-input" class="form-input" rows="2" placeholder="Conteúdo do aviso ou promoção..." style="margin-bottom: 8px;"></textarea>
-              <button onclick="sendPushNotification()" class="btn-primary" style="background: #a855f7;">Disparar Notificação para Alunos</button>
-            </div>
-
-            <!-- TABELA DE GESTÃO DE ALUNOS -->
-            <div style="font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Gestão de Alunos & Credenciais</div>
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Nome / Usuário</th>
-                  <th>Telefone</th>
-                  <th>FitCoins</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody id="admin-users-table-body">
-                <!-- Preenchido via JS -->
-              </tbody>
-            </table>
-
-            <!-- ADICIONAR NOVA RECEITA -->
-            <div style="margin-top: 20px; font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Adicionar Nova Receita / Cardápio</div>
-            <input type="text" id="new-recipe-title" class="form-input" placeholder="Nome do Prato / Cardápio" style="margin-bottom: 6px;">
-            <textarea id="new-recipe-desc" class="form-input" rows="2" placeholder="Ingredientes e modo de preparo..." style="margin-bottom: 8px;"></textarea>
-            <button onclick="addNewRecipe()" class="btn-primary">Cadastrar Receita</button>
-
-            <!-- ADICIONAR NOVA PLAYLIST -->
-            <div style="margin-top: 20px; font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Adicionar Playlist de Treino</div>
-            <input type="text" id="new-playlist-title" class="form-input" placeholder="Título do Treino / Playlist" style="margin-bottom: 6px;">
-            <input type="text" id="new-playlist-url" class="form-input" placeholder="Link do YouTube" style="margin-bottom: 8px;">
-            <button onclick="addNewPlaylist()" class="btn-primary">Cadastrar Playlist</button>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- MODAL DE EDIÇÃO COMPLETA DO ALUNO (ADMIN) -->
-  <div id="edit-user-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px;">Editar Cadastro do Aluno</div>
-      <form onsubmit="saveUserEdit(event)">
-        <input type="hidden" id="edit-user-index">
-        <div class="form-group">
-          <label>Nome Completo</label>
-          <input type="text" id="edit-fullname" class="form-input" required>
-        </div>
-        <div class="form-group">
-          <label>Telefone / WhatsApp</label>
-          <input type="tel" id="edit-phone" class="form-input" required>
-        </div>
-        <div class="form-group">
-          <label>E-mail</label>
-          <input type="email" id="edit-email" class="form-input" required>
-        </div>
-        <div class="form-group">
-          <label>Nome de Usuário</label>
-          <input type="text" id="edit-username" class="form-input" required>
-        </div>
-        <div class="form-group">
-          <label>Redefinir Nova Senha</label>
-          <input type="password" id="edit-password" class="form-input" placeholder="Digite para alterar a senha">
-        </div>
-        <button type="submit" class="btn-primary">Salvar Alterações</button>
-        <button type="button" onclick="closeEditUserModal()" class="btn-secondary">Cancelar</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    // CHAVE DA API GEMINI PROTEGIDA
-    var GEMINI_API_KEY = "AQ.Ab8RN6L-LFF7r-8CTTaS3Ajp3yb-k-9SvmxKDISXw6NBX-Jskg";
-
-    // ESTADO E DADOS DO APP
-    var currentUser = null;
-    var usersData = JSON.parse(localStorage.getItem('vidagym_users')) || [
-      { fullname: "Rui Sousa Admin", phone: "(21) 99999-9999", email: "admin@vidagym.com", username: "ruiSousa", pass: "120317Mel$$", coins: 999, isAdmin: true }
-    ];
-
-    var recipesData = JSON.parse(localStorage.getItem('vidagym_recipes')) || [
-      { title: "Café da Manhã Fit", desc: "Ovos mexidos com aveia, café preto sem açúcar e 1 fatia de mamão." },
-      { title: "Almoço Proteico", desc: "Peito de frango grelhado, arroz integral e salada verde com azeite." }
-    ];
-
-    var playlistsData = JSON.parse(localStorage.getItem('vidagym_playlists')) || [
-      { title: "Treino Hiit em Casa", url: "https://www.youtube.com" },
-      { title: "Músicas Motivacionais para Correr", url: "https://www.youtube.com" }
-    ];
-
-    window.onload = function() {
-      renderRecipes();
-      renderPlaylists();
-      renderShopItems();
-    };
-
-    function handleLogin(e) {
-      e.preventDefault();
-      var userIn = document.getElementById('login-user').value.trim();
-      var passIn = document.getElementById('login-pass').value.trim();
-
-      var found = usersData.find(u => (u.username.toLowerCase() === userIn.toLowerCase() || u.email.toLowerCase() === userIn.toLowerCase()) && u.pass === passIn);
-
-      if (found) {
-        currentUser = found;
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('app-screen').classList.remove('hidden');
-        document.getElementById('user-display-name').innerText = currentUser.fullname.split(' ')[0];
-        document.getElementById('user-coin-balance').innerText = currentUser.coins;
-
-        if (currentUser.isAdmin) {
-          document.getElementById('tab-admin-btn').classList.remove('hidden');
-          renderAdminPanel();
-        } else {
-          document.getElementById('tab-admin-btn').classList.add('hidden');
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
         }
-      } else {
-        alert('Usuário ou senha incorretos!');
-      }
-    }
+    </script>
 
-    function showRegisterForm() {
-      document.getElementById('login-box').classList.add('hidden');
-      document.getElementById('register-box-trigger').classList.add('hidden');
-      document.getElementById('register-box').classList.remove('hidden');
-    }
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    function showLoginForm() {
-      document.getElementById('register-box').classList.add('hidden');
-      document.getElementById('login-box').classList.remove('hidden');
-      document.getElementById('register-box-trigger').classList.remove('hidden');
-    }
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    function handleRegister(e) {
-      e.preventDefault();
-      var fullname = document.getElementById('reg-fullname').value.trim();
-      var phone = document.getElementById('reg-phone').value.trim();
-      var email = document.getElementById('reg-email').value.trim();
-      var username = document.getElementById('reg-user').value.trim();
-      var pass = document.getElementById('reg-pass').value.trim();
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Custom animations for notifications */
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+            animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
 
-      var newUser = { fullname: fullname, phone: phone, email: email, username: username, pass: pass, coins: 50, isAdmin: false };
-      usersData.push(newUser);
-      localStorage.setItem('vidagym_users', JSON.stringify(usersData));
+        /* Pulse badge */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.03); }
+        }
+        .pulse-badge {
+            animation: pulseGlow 2s infinite;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-50 text-slate-800 antialiased selection:bg-emerald-500 selection:text-white flex flex-col min-h-screen">
 
-      alert('Cadastro realizado com sucesso! Faça login para continuar.');
-      showLoginForm();
-    }
-
-    function switchTab(tabName) {
-      var tabs = document.querySelectorAll('.nav-tab');
-      tabs.forEach(t => t.classList.remove('active'));
-
-      var pages = document.querySelectorAll('.tab-page');
-      pages.forEach(p => p.classList.add('hidden'));
-
-      document.getElementById('tab-' + tabName).classList.remove('hidden');
-      event.target.classList.add('active');
-    }
-
-    function addFitCoins(amount, reason) {
-      if (currentUser) {
-        currentUser.coins += amount;
-        document.getElementById('user-coin-balance').innerText = currentUser.coins;
-        saveUsersLocally();
-        alert('Parabéns! ' + reason + ' You earned +' + amount + ' FitCoins!');
-      }
-    }
-
-    function saveUsersLocally() {
-      localStorage.setItem('vidagym_users', JSON.stringify(usersData));
-    }
-
-    /* PAINEL ADMIN FUNCTIONS */
-    function renderAdminPanel() {
-      document.getElementById('admin-stat-users').innerText = usersData.length;
-      document.getElementById('admin-stat-recipes').innerText = recipesData.length;
-
-      var tbody = document.getElementById('admin-users-table-body');
-      tbody.innerHTML = '';
-
-      usersData.forEach((u, index) => {
-        var tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${u.fullname}</strong><br><small style="color:#64748b;">@${u.username}</small></td>
-          <td>${u.phone || 'N/A'}</td>
-          <td><strong>${u.coins}</strong></td>
-          <td>
-            <button onclick="openEditUserModal(${index})" style="background:#3b82f6; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-pen"></i></button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function openEditUserModal(index) {
-      var u = usersData[index];
-      document.getElementById('edit-user-index').value = index;
-      document.getElementById('edit-fullname').value = u.fullname;
-      document.getElementById('edit-phone').value = u.phone || '';
-      document.getElementById('edit-email').value = u.email;
-      document.getElementById('edit-username').value = u.username;
-      document.getElementById('edit-password').value = '';
-      document.getElementById('edit-user-modal').classList.remove('hidden');
-    }
-
-    function closeEditUserModal() {
-      document.getElementById('edit-user-modal').classList.add('hidden');
-    }
-
-    function saveUserEdit(e) {
-      e.preventDefault();
-      var idx = document.getElementById('edit-user-index').value;
-      var u = usersData[idx];
-
-      u.fullname = document.getElementById('edit-fullname').value.trim();
-      u.phone = document.getElementById('edit-phone').value.trim();
-      u.email = document.getElementById('edit-email').value.trim();
-      u.username = document.getElementById('edit-username').value.trim();
-
-      var newPass = document.getElementById('edit-password').value.trim();
-      if (newPass) u.pass = newPass;
-
-      saveUsersLocally();
-      renderAdminPanel();
-      closeEditUserModal();
-      alert('Cadastro do aluno atualizado com sucesso!');
-    }
-
-    function sendPushNotification() {
-      var title = document.getElementById('push-title-input').value.trim() || 'Aviso Vidagym';
-      var body = document.getElementById('push-body-input').value.trim() || 'Nova promoção e treino disponível no app!';
-
-      document.getElementById('push-title-text').innerText = title;
-      document.getElementById('push-body-text').innerText = body;
-
-      var banner = document.getElementById('push-notification-banner');
-      banner.classList.add('show');
-
-      setTimeout(() => {
-        banner.classList.remove('show');
-      }, 4000);
-    }
-
-    /* CARDÁPIOS & PLAYLISTS */
-    function renderRecipes() {
-      var container = document.getElementById('recipes-list-container');
-      container.innerHTML = '';
-      recipesData.forEach(r => {
-        container.innerHTML += `
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px;">
-            <div style="font-size:13px; font-weight:800; color:#0f172a;">${r.title}</div>
-            <div style="font-size:11px; color:#475569; margin-top:2px;">${r.desc}</div>
-          </div>
-        `;
-      });
-    }
-
-    function addNewRecipe() {
-      var title = document.getElementById('new-recipe-title').value.trim();
-      var desc = document.getElementById('new-recipe-desc').value.trim();
-      if (title && desc) {
-        recipesData.push({ title: title, desc: desc });
-        localStorage.setItem('vidagym_recipes', JSON.stringify(recipesData));
-        renderRecipes();
-        alert('Receita cadastrada!');
-      }
-    }
-
-    function renderPlaylists() {
-      var container = document.getElementById('playlists-list-container');
-      container.innerHTML = '';
-      playlistsData.forEach(p => {
-        container.innerHTML += `
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div style="font-size:13px; font-weight:800; color:#0f172a;">${p.title}</div>
+    <!-- iFood Style Floating Banner Notification Container -->
+    <div id="pushNotificationBanner" class="hidden fixed top-3 left-3 right-3 md:left-auto md:right-4 md:w-96 z-50 transition-all duration-300">
+        <div class="bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-slate-700/50 flex items-start space-x-3.5 animate-slide-down">
+            <div id="pushNotifIconBg" class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                <i id="pushNotifIcon" class="fa-solid fa-bell text-white text-lg"></i>
             </div>
-            <a href="${p.url}" target="_blank" style="background:#red; color:#ef4444; font-size:16px;"><i class="fa-brands fa-youtube"></i></a>
-          </div>
-        `;
-      });
-    }
+            <div class="flex-1 min-w-0 pr-2">
+                <div class="flex items-center justify-between mb-0.5">
+                    <span class="text-xs font-bold text-emerald-400 tracking-wide uppercase">Vidagym Express</span>
+                    <span class="text-[10px] text-slate-400">Agora</span>
+                </div>
+                <h4 id="pushNotifTitle" class="text-sm font-bold text-white truncate">Nova Oferta Fitness!</h4>
+                <p id="pushNotifMessage" class="text-xs text-slate-300 line-clamp-2 mt-0.5">Ganhe 50 FitCoins completando o treino de hoje!</p>
+            </div>
+            <button onclick="hidePushNotification()" class="text-slate-400 hover:text-white p-1 transition-colors">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+        </div>
+    </div>
 
-    function addNewPlaylist() {
-      var title = document.getElementById('new-playlist-title').value.trim();
-      var url = document.getElementById('new-playlist-url').value.trim();
-      if (title && url) {
-        playlistsData.push({ title: title, url: url });
-        localStorage.setItem('vidagym_playlists', JSON.stringify(playlistsData));
-        renderPlaylists();
-        alert('Playlist cadastrada!');
-      }
-    }
+    <!-- MAIN APP WRAPPER -->
+    <div id="appContainer" class="flex-1 flex flex-col max-w-7xl w-full mx-auto relative pb-20 md:pb-0">
 
-    function renderShopItems() {
-      var items = [
-        { name: "Laço Vermelho", cost: 50, emoji: "🎀" },
-        { name: "Óculos Escuros", cost: 100, emoji: "🕶️" }
-      ];
-      var container = document.getElementById('shop-items-container');
-      container.innerHTML = '';
-      items.forEach(item => {
-        container.innerHTML += `
-          <div class="shop-item">
-            <div style="font-size:32px;">${item.emoji}</div>
-            <div style="font-size:12px; font-weight:800; margin:4px 0;">${item.name}</div>
-            <button onclick="addFitCoins(-${item.cost}, 'Compra do item ${item.name}')" class="btn-primary" style="font-size:10px; padding:6px;">Comprar (${item.cost} Coins)</button>
-          </div>
-        `;
-      });
-    }
+        <!-- TOP BAR / HEADER -->
+        <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 font-black text-xl">
+                    V
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-slate-900 text-lg leading-tight tracking-tight">Vidagym</h1>
+                    <p class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-ping"></span>
+                        Saúde & Alto Rendimento
+                    </p>
+                </div>
+            </div>
 
-    function previewPlateImage(e) {
-      var file = e.target.files[0];
-      if (file) {
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-          document.getElementById('upload-placeholder').classList.add('hidden');
-          var img = document.getElementById('plate-image-preview');
-          img.src = evt.target.result;
-          img.classList.remove('hidden');
+            <!-- Top Header Right Controls -->
+            <div class="flex items-center space-x-3">
+                <!-- User Profile & Admin Badge -->
+                <div id="userInfoHeader" class="hidden flex items-center space-x-2 bg-slate-100 rounded-full py-1 px-3 border border-slate-200">
+                    <i class="fa-solid fa-circle-user text-slate-500 text-lg"></i>
+                    <span id="userNameDisplay" class="text-xs font-bold text-slate-700">Usuário</span>
+                    <span id="adminBadgeHeader" class="hidden text-[10px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-full uppercase">Admin</span>
+                </div>
+
+                <!-- FitCoins Pill -->
+                <div id="fitCoinPill" class="hidden flex items-center space-x-1.5 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full text-amber-700 font-bold text-xs shadow-sm">
+                    <i class="fa-solid fa-coins text-amber-500 animate-bounce"></i>
+                    <span id="userFitCoinBalance">0</span>
+                    <span class="text-[10px] text-amber-600 font-normal">FC</span>
+                </div>
+
+                <!-- Switch Role / Auth Button -->
+                <button id="authHeaderBtn" onclick="openAuthModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-3.5 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Entrar</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-4 md:p-6 max-w-6xl w-full mx-auto">
+
+            <!-- TAB 1: CLIENT DASHBOARD (INÍCIO) -->
+            <section id="tab-inicio" class="tab-content space-y-6">
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div>
+                            <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                                <i class="fa-solid fa-fire text-amber-300"></i> Meta Diária Ativa
+                            </div>
+                            <h2 class="text-2xl md:text-3xl font-black">Olá, <span id="welcomeUserName">Atleta</span>! 👋</h2>
+                            <p class="text-emerald-100 text-sm mt-1 max-w-md">Transforme seus hábitos diários e conquiste recompensas reais com o Vidagym.</p>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20 w-full md:w-auto">
+                            <div class="p-3 bg-emerald-500/40 rounded-xl text-center">
+                                <span id="dashFitCoins" class="text-2xl font-black block">120</span>
+                                <span class="text-[10px] text-emerald-100 uppercase tracking-wider font-bold">FitCoins</span>
+                            </div>
+                            <button onclick="switchTab('mascote')" class="bg-white text-emerald-700 hover:bg-emerald-50 font-bold text-xs px-4 py-3 rounded-xl transition shadow-md">
+                                Visitar Loja <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Steps -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
+                            <span>Passos Hoje</span>
+                            <i class="fa-solid fa-shoe-prints text-emerald-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-slate-800" id="stepCount">6,420</div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+                                <div class="bg-emerald-500 h-full rounded-full" style="width: 64%"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-1 block">Meta: 10,000</span>
+                        </div>
+                    </div>
+
+                    <!-- Water Tracker -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
+                            <span>Hidratação</span>
+                            <i class="fa-solid fa-glass-water text-blue-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-baseline justify-between">
+                                <div class="text-2xl font-black text-slate-800"><span id="waterCounter">5</span>/8 <span class="text-xs font-normal text-slate-500">copos</span></div>
+                                <button onclick="addWater()" class="bg-blue-50 text-blue-600 hover:bg-blue-100 p-1.5 rounded-lg transition text-xs font-bold active:scale-95">
+                                    +1 <i class="fa-solid fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+                                <div id="waterProgressBar" class="bg-blue-500 h-full rounded-full transition-all duration-300" style="width: 62.5%"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-1 block">1.25 L consumidos</span>
+                        </div>
+                    </div>
+
+                    <!-- Calories -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
+                            <span>Calorias</span>
+                            <i class="fa-solid fa-fire-flame-curved text-amber-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-slate-800">480 <span class="text-xs font-normal text-slate-500">kcal</span></div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+                                <div class="bg-amber-500 h-full rounded-full" style="width: 48%"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-1 block">Gasto estimado</span>
+                        </div>
+                    </div>
+
+                    <!-- Active Workout Time -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
+                            <span>Tempo Treino</span>
+                            <i class="fa-solid fa-stopwatch text-purple-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-slate-800">45 <span class="text-xs font-normal text-slate-500">min</span></div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+                                <div class="bg-purple-500 h-full rounded-full" style="width: 75%"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-1 block">Meta: 60 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Content Carousel or Quick Access -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-amber-500"></i> Ações Rápidas do Dia
+                        </h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="switchTab('rotinas')" class="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 hover:border-emerald-300 text-left transition group">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 group-hover:text-emerald-700 transition">Ver Cardápios & Receitas</h4>
+                            <p class="text-xs text-slate-500 mt-1">Consulte refeições recomendadas e pratos fitness atualizados pelo admin.</p>
+                        </button>
+
+                        <button onclick="switchTab('ia')" class="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 hover:border-emerald-300 text-left transition group">
+                            <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-camera-retro"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 group-hover:text-emerald-700 transition">Analisar Refeição com IA</h4>
+                            <p class="text-xs text-slate-500 mt-1">Tire foto do seu prato para calcular calorias instantaneamente.</p>
+                        </button>
+
+                        <button onclick="switchTab('desafios')" class="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 hover:border-emerald-300 text-left transition group">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 group-hover:text-emerald-700 transition">Desafios em Grupo</h4>
+                            <p class="text-xs text-slate-500 mt-1">Participe do Desafio Oficial de 7 Dias ou crie o seu com amigos.</p>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: ROTINAS & CONTEÚDO (RECEITAS DINÂMICAS E PLAYLISTS) -->
+            <section id="tab-rotinas" class="tab-content hidden space-y-6">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Rotinas & Guia Fitness</h2>
+                        <p class="text-xs text-slate-500">Receitas personalizadas e playlists dinâmicas de treino atualizadas pelo seu treinador.</p>
+                    </div>
+                </div>
+
+                <!-- Fasting Timer Widget -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="space-y-1 text-center md:text-left">
+                        <div class="inline-block bg-emerald-500/20 text-emerald-400 font-bold text-xs px-2.5 py-1 rounded-full uppercase">Jejum Intermitente 16:8</div>
+                        <h3 class="text-xl font-bold">Cronômetro de Jejum</h3>
+                        <p class="text-xs text-slate-400">Tempo decorrido na sua janela atual de queima de gordura.</p>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div class="text-center">
+                            <span id="fastingTimer" class="text-3xl font-black tracking-widest text-emerald-400 font-mono">14:22:05</span>
+                            <span class="text-[10px] text-slate-400 block uppercase font-semibold">Horas Concluídas</span>
+                        </div>
+                        <button onclick="toggleFastingTimer()" id="fastingBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-3 rounded-2xl transition shadow-md shadow-emerald-900/50">
+                            Pausar Jejum
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recipes Section (Dynamic from Database) -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-bowl-food text-emerald-600"></i> Cardápio e Receitas
+                        </h3>
+                        <span class="text-xs text-slate-500" id="recipeCountBadge">0 receitas cadastradas</span>
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-2" id="recipeFilterBar">
+                        <button onclick="filterRecipes('all')" class="recipe-filter-btn active bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition whitespace-nowrap">Todas</button>
+                        <button onclick="filterRecipes('Café')" class="recipe-filter-btn bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-semibold px-4 py-2 rounded-xl transition whitespace-nowrap">Café da Manhã</button>
+                        <button onclick="filterRecipes('Almoço')" class="recipe-filter-btn bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-semibold px-4 py-2 rounded-xl transition whitespace-nowrap">Almoço</button>
+                        <button onclick="filterRecipes('Lanche')" class="recipe-filter-btn bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-semibold px-4 py-2 rounded-xl transition whitespace-nowrap">Lanches</button>
+                        <button onclick="filterRecipes('Jantar')" class="recipe-filter-btn bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-semibold px-4 py-2 rounded-xl transition whitespace-nowrap">Jantar</button>
+                    </div>
+
+                    <!-- Dynamic Recipes Grid -->
+                    <div id="recipesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+
+                <!-- Dynamic Playlists & Music Section -->
+                <div class="space-y-4 pt-4 border-t border-slate-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-music text-purple-600"></i> Playlists & Treinos em Vídeo
+                        </h3>
+                    </div>
+
+                    <div id="playlistsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: IA MEAL ANALYZER -->
+            <section id="tab-ia" class="tab-content hidden space-y-6">
+                <div class="bg-gradient-to-br from-teal-700 to-emerald-800 rounded-3xl p-6 text-white shadow-xl">
+                    <div class="max-w-xl space-y-2">
+                        <div class="inline-flex items-center gap-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Inteligência Artificial
+                        </div>
+                        <h2 class="text-2xl font-black">Analisador de Refeição Vidagym IA</h2>
+                        <p class="text-xs text-emerald-100">Envie uma foto do seu prato para calcular estimativas de calorias, proteínas, carboidratos e receber dicas nutricionais instantâneas.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+                    <!-- Config Gemini API Key -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-key text-emerald-600 text-lg"></i>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">Chave de API Gemini (Opcional para modo avançado)</h4>
+                                <p class="text-[11px] text-slate-500">O app inclui demonstração simulated offline padrão. Digite sua chave do Google AI Studio para usar modelo real.</p>
+                            </div>
+                        </div>
+                        <input type="password" id="geminiApiKeyInput" placeholder="Cole sua API Key aqui..." class="w-full md:w-64 text-xs p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <!-- Upload Box -->
+                    <div class="border-2 border-dashed border-slate-300 rounded-3xl p-8 text-center hover:border-emerald-500 transition cursor-pointer bg-slate-50/50" onclick="triggerPhotoUpload()">
+                        <input type="file" id="mealPhotoInput" accept="image/*" class="hidden" onchange="handleMealPhoto(event)">
+                        <div id="uploadPlaceholder" class="space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-2xl shadow-inner">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">Clique ou toque para enviar a foto do prato</h4>
+                                <p class="text-xs text-slate-400 mt-1">Formatos suportados: JPG, PNG, WEBP</p>
+                            </div>
+                        </div>
+                        <div id="imagePreviewContainer" class="hidden space-y-3">
+                            <img id="mealImagePreview" class="max-h-56 mx-auto rounded-2xl object-cover shadow-md border border-slate-200">
+                            <button type="button" onclick="event.stopPropagation(); triggerPhotoUpload()" class="text-xs text-emerald-600 font-bold hover:underline">
+                                Mudar Imagem
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <button onclick="analyzeMealWithIA()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        <span>Analisar Prato Agora</span>
+                    </button>
+
+                    <!-- Result Card -->
+                    <div id="iaResultCard" class="hidden bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                            <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-emerald-600"></i> Análise do Prato Detectada
+                            </h4>
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">+15 FitCoins Conquistados!</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 text-center">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="text-xs text-slate-400 font-semibold block">Calorias Est.</span>
+                                <span id="iaCalories" class="text-lg font-extrabold text-slate-800">420 kcal</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="text-xs text-slate-400 font-semibold block">Proteínas</span>
+                                <span id="iaProteins" class="text-lg font-extrabold text-emerald-600">35 g</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="text-xs text-slate-400 font-semibold block">Carboidratos</span>
+                                <span id="iaCarbs" class="text-lg font-extrabold text-amber-600">40 g</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-xs font-bold text-slate-700 mb-1">Avaliação Nutricional & Sugestões:</h5>
+                            <p id="iaFeedback" class="text-xs text-slate-600 leading-relaxed">Prato equilibrado com boa quantidade de proteína magra e fibras vegetais. Para otimizar seus treinos, recomendamos adicionar uma porção extra de água pós-refeição.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: MASCOTE & LOJA FITCOINS -->
+            <section id="tab-mascote" class="tab-content hidden space-y-6">
+                <!-- Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Mascote Virtual Vidagym</h2>
+                        <p class="text-xs text-slate-500">Adote seu parceiro de treinos e cuide dele com seus FitCoins!</p>
+                    </div>
+                    <div class="bg-amber-100 border border-amber-300 text-amber-800 font-bold px-4 py-2 rounded-2xl flex items-center space-x-2">
+                        <i class="fa-solid fa-coins text-amber-500 text-lg"></i>
+                        <span id="mascotCoinBalance" class="text-lg font-black">120</span>
+                        <span class="text-xs">FC</span>
+                    </div>
+                </div>
+
+                <!-- Mascot Showcase Card -->
+                <div class="bg-gradient-to-b from-emerald-500 to-teal-700 rounded-3xl p-8 text-white shadow-xl text-center relative overflow-hidden space-y-4">
+                    <div class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold">
+                        Nível do Mascote: <span id="mascotLevel">3</span> (Saudável 🐾)
+                    </div>
+
+                    <!-- Pet Visual Display -->
+                    <div class="relative w-40 h-40 mx-auto bg-white/10 rounded-full flex items-center justify-center border-4 border-white/30 backdrop-blur-sm shadow-inner my-4">
+                        <div id="mascotAvatar" class="text-7xl transition-transform duration-300 hover:scale-110 select-none">
+                            🐱
+                        </div>
+                    </div>
+
+                    <h3 id="mascotName" class="text-2xl font-black">Mimi, o Gatinho Fit</h3>
+
+                    <div class="flex items-center justify-center space-x-3">
+                        <button onclick="interactMascot('feed')" class="bg-white text-emerald-800 hover:bg-emerald-50 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5">
+                            <i class="fa-solid fa-apple-whole text-red-500"></i> Alimentar (-10 FC)
+                        </button>
+                        <button onclick="interactMascot('play')" class="bg-white text-emerald-800 hover:bg-emerald-50 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5">
+                            <i class="fa-solid fa-dumbbell text-emerald-600"></i> Treinar Junto (+5 FC)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Change Pet & Accessories Shop -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Pet Selector -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                        <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-paw text-emerald-600"></i> Escolha seu Mascote
+                        </h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button onclick="selectPet('cat', '🐱', 'Mimi, o Gatinho Fit')" class="p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 text-center hover:border-emerald-600 transition">
+                                <span class="text-4xl block mb-1">🐱</span>
+                                <span class="text-xs font-bold text-slate-800 block">Gatinho</span>
+                            </button>
+                            <button onclick="selectPet('dog', '🐶', 'Rex, o Doguinho')" class="p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 text-center transition">
+                                <span class="text-4xl block mb-1">🐶</span>
+                                <span class="text-xs font-bold text-slate-800 block">Cachorrinho</span>
+                            </button>
+                            <button onclick="selectPet('rabbit', '🐰', 'Bibi, a Coelhinha')" class="p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 text-center transition">
+                                <span class="text-4xl block mb-1">🐰</span>
+                                <span class="text-xs font-bold text-slate-800 block">Coelhinho</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FitCoins Shop -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                        <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-store text-amber-500"></i> Loja de Acessórios Vidagym
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-2xl">🧢</span>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-800">Boné Esportivo Fit</h4>
+                                        <span class="text-[10px] text-slate-400">Estilo exclusivo</span>
+                                    </div>
+                                </div>
+                                <button onclick="buyItem('Boné Esportivo', 50)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition">
+                                    50 FC
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-2xl">🕶️</span>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-800">Óculos de Sol Pro</h4>
+                                        <span class="text-[10px] text-slate-400">+20% Estilo</span>
+                                    </div>
+                                </div>
+                                <button onclick="buyItem('Óculos Pro', 80)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition">
+                                    80 FC
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-2xl">🥇</span>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-800">Medalha de Campeão</h4>
+                                        <span class="text-[10px] text-slate-400">Acessório lendário</span>
+                                    </div>
+                                </div>
+                                <button onclick="buyItem('Medalha de Campeão', 150)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition">
+                                    150 FC
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: DESAFIOS EM GRUPO -->
+            <section id="tab-desafios" class="tab-content hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Desafios & Comunidade</h2>
+                    <p class="text-xs text-slate-500">Treine junto com amigos, compartilhe no WhatsApp e vença os desafios semanais.</p>
+                </div>
+
+                <!-- Official Challenge Banner -->
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="space-y-2">
+                        <span class="bg-amber-400 text-amber-950 font-extrabold text-[10px] uppercase px-2.5 py-1 rounded-full">Desafio Oficial Vidagym</span>
+                        <h3 class="text-2xl font-black">🔥 7 Dias de Foco Total</h3>
+                        <p class="text-xs text-emerald-100 max-w-lg">Complete 10,000 passos e beba 2L de água diariamente por 7 dias para ganhar 300 FitCoins e o selo Campeão Vidagym.</p>
+                    </div>
+                    <button onclick="joinOfficialChallenge()" class="bg-white text-emerald-800 hover:bg-emerald-50 font-black text-xs px-6 py-3.5 rounded-2xl transition shadow-lg shrink-0">
+                        Inscrever-se Agora
+                    </button>
+                </div>
+
+                <!-- Create Custom Challenge Builder -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                    <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-square-plus text-emerald-600"></i> Criar Desafio Personalizado com Amigos
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nome do Desafio</label>
+                            <input type="text" id="customChallengeTitle" placeholder="Ex: Corrida do Fim de Semana" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Meta Principal</label>
+                            <input type="text" id="customChallengeGoal" placeholder="Ex: 5km de corrida ou 3 treinos" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+
+                    <button onclick="shareChallengeOnWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2 text-xs">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Compartilhar Desafio no WhatsApp</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- TAB 6: DEDICATED ADMIN DASHBOARD (PAINEL ADMINISTRATIVO COMPLETO) -->
+            <section id="tab-admin" class="tab-content hidden space-y-6">
+                <!-- Admin Header -->
+                <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-emerald-500 text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full">Área Restrita</span>
+                            <span class="text-xs text-slate-400">Modo Gestor Ativo</span>
+                        </div>
+                        <h2 class="text-2xl font-black mt-1">Painel Administrativo Vidagym</h2>
+                        <p class="text-xs text-slate-400">Controle total de usuários, redefinição de senhas, receitas, músicas e avisos iFood.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="switchTab('inicio')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition">
+                            <i class="fa-solid fa-eye mr-1"></i> Ver App do Cliente
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Metrics Overview Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-semibold block mb-1">Total de Alunos</span>
+                        <div id="adminStatUsers" class="text-2xl font-black text-slate-900">4</div>
+                        <span class="text-[10px] text-emerald-600 font-bold block mt-1"><i class="fa-solid fa-arrow-up"></i> +100% ativos</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-semibold block mb-1">FitCoins em Circulação</span>
+                        <div id="adminStatCoins" class="text-2xl font-black text-amber-600">870</div>
+                        <span class="text-[10px] text-slate-400 block mt-1">Saldo acumulado</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-semibold block mb-1">Receitas Cadastradas</span>
+                        <div id="adminStatRecipes" class="text-2xl font-black text-emerald-600">3</div>
+                        <span class="text-[10px] text-slate-400 block mt-1">Disponíveis no app</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-semibold block mb-1">Playlists & Vídeos</span>
+                        <div id="adminStatPlaylists" class="text-2xl font-black text-purple-600">2</div>
+                        <span class="text-[10px] text-slate-400 block mt-1">Treinos em áudio/vídeo</span>
+                    </div>
+                </div>
+
+                <!-- ADMIN SECTION 1: USER MANAGEMENT (FULL CONTROL) -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-users-gear text-emerald-600"></i> Gerenciamento de Alunos & Cadastros
+                        </h3>
+                        <span class="text-xs text-slate-500">Controle total de dados e senhas</span>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                        <table class="w-full text-left text-xs text-slate-600">
+                            <thead class="bg-slate-100 text-slate-800 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3.5">Nome Completo</th>
+                                    <th class="p-3.5">Usuário</th>
+                                    <th class="p-3.5">E-mail / Telefone</th>
+                                    <th class="p-3.5">FitCoins</th>
+                                    <th class="p-3.5">Status</th>
+                                    <th class="p-3.5 text-right">Ações Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTableBody" class="divide-y divide-slate-200">
+                                <!-- JS Populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADMIN SECTION 2: RECIPES & MEALS MANAGEMENT -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-utensils text-emerald-600"></i> Gerenciador de Receitas e Cardápios
+                        </h3>
+                        <span class="text-xs text-slate-500">Adicione ou remova refeições para os alunos</span>
+                    </div>
+
+                    <!-- Add Recipe Form -->
+                    <form onsubmit="adminAddRecipe(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-4">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Adicionar Nova Receita / Refeição</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Título da Receita</label>
+                                <input type="text" id="recipeTitleInput" required placeholder="Ex: Omelete Proteico" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Categoria</label>
+                                <select id="recipeCategoryInput" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                                    <option value="Café">Café da Manhã</option>
+                                    <option value="Almoço">Almoço</option>
+                                    <option value="Lanche">Lanche</option>
+                                    <option value="Jantar">Jantar</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Calorias Estimadas</label>
+                                <input type="text" id="recipeCaloriesInput" required placeholder="Ex: 320 kcal" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Ingredientes & Modo de Preparo</label>
+                            <textarea id="recipeDescInput" rows="2" required placeholder="Ex: 3 ovos, espinafre, queijo branco sem lactose..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500"></textarea>
+                        </div>
+
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Salvar e Publicar Receita
+                        </button>
+                    </form>
+
+                    <!-- Existing Recipes List -->
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-wider">Receitas Ativas na Plataforma</h4>
+                        <div id="adminRecipesList" class="space-y-2">
+                            <!-- JS Populated -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN SECTION 3: PLAYLISTS & MUSIC MANAGEMENT -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-record-vinyl text-purple-600"></i> Gerenciador de Playlists e Músicas
+                        </h3>
+                        <span class="text-xs text-slate-500">Gerencie links de treinos e playlists motivacionais</span>
+                    </div>
+
+                    <!-- Add Playlist Form -->
+                    <form onsubmit="adminAddPlaylist(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-4">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Adicionar Nova Playlist / Vídeo</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Nome da Playlist/Música</label>
+                                <input type="text" id="playlistTitleInput" required placeholder="Ex: Workout EDM Mix 2026" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Estilo / Categoria</label>
+                                <input type="text" id="playlistCategoryInput" required placeholder="Ex: Eletrônica Motivacional" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Link do YouTube / Spotify</label>
+                                <input type="url" id="playlistUrlInput" required placeholder="https://www.youtube.com/watch?v=..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Adicionar Playlist
+                        </button>
+                    </form>
+
+                    <!-- Existing Playlists List -->
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-wider">Playlists Ativas no App</h4>
+                        <div id="adminPlaylistsList" class="space-y-2">
+                            <!-- JS Populated -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN SECTION 4: IFOOD-STYLE PUSH NOTIFICATION DISPATCHER -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                        <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-bell text-amber-500"></i> Disparador de Mensagens & Avisos Push (Estilo iFood)
+                        </h3>
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Notificação Flutuante Ativa</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Form to Dispatch Notification -->
+                        <form onsubmit="adminDispatchPushNotification(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Título da Notificação</label>
+                                <input type="text" id="pushTitleInput" required placeholder="Ex: 🍔 Hora do Lanche Saudável!" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:border-emerald-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Mensagem do Aviso / Promoção</label>
+                                <textarea id="pushMessageInput" rows="3" required placeholder="Ex: Confira a nova receita de Shake de Proteína adicionada pelo seu personal no app!" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:border-emerald-500"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Estilo do Ícone</label>
+                                <select id="pushIconInput" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:border-emerald-500">
+                                    <option value="bell">🔔 Notificação Padrão</option>
+                                    <option value="fire">🔥 Promoção Fitness</option>
+                                    <option value="gift">🎁 Presente / Bônus</option>
+                                    <option value="dumbbell">🏋️ Lembrete de Treino</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 text-xs">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Disparar Mensagem para Todos os Alunos</span>
+                            </button>
+                        </form>
+
+                        <!-- Live Preview Card -->
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Pré-visualização do Card iFood:</h4>
+                                <div class="bg-slate-900 text-white p-4 rounded-2xl shadow-xl border border-slate-800 flex items-start space-x-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                                        <i class="fa-solid fa-bell text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between mb-0.5">
+                                            <span class="text-xs font-bold text-emerald-400">Vidagym Express</span>
+                                            <span class="text-[10px] text-slate-400">Agora</span>
+                                        </div>
+                                        <h5 class="text-sm font-bold text-white truncate">Título de Exemplo</h5>
+                                        <p class="text-xs text-slate-300 mt-0.5">Esta é uma demonstração de como o alerta flutuante aparecerá na tela do aluno.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <p class="text-[11px] text-slate-500">Ao clicar em "Disparar Mensagem", o card flutuante acima surge imediatamente no topo da tela do aluno e permanece visível com som suave de alerta.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- BOTTOM NAVIGATION BAR (MOBILE & DESKTOP COMPATIBLE) -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 py-2 px-3">
+            <div class="max-w-md mx-auto flex items-center justify-around">
+                <button onclick="switchTab('inicio')" class="nav-btn active flex flex-col items-center text-emerald-600 transition p-1" data-tab="inicio">
+                    <i class="fa-solid fa-house text-lg"></i>
+                    <span class="text-[10px] font-bold mt-0.5">Início</span>
+                </button>
+
+                <button onclick="switchTab('rotinas')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-emerald-600 transition p-1" data-tab="rotinas">
+                    <i class="fa-solid fa-calendar-check text-lg"></i>
+                    <span class="text-[10px] font-bold mt-0.5">Rotinas</span>
+                </button>
+
+                <button onclick="switchTab('ia')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-emerald-600 transition p-1" data-tab="ia">
+                    <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+                    <span class="text-[10px] font-bold mt-0.5">IA Prato</span>
+                </button>
+
+                <button onclick="switchTab('mascote')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-emerald-600 transition p-1" data-tab="mascote">
+                    <i class="fa-solid fa-paw text-lg"></i>
+                    <span class="text-[10px] font-bold mt-0.5">Mascote</span>
+                </button>
+
+                <button onclick="switchTab('desafios')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-emerald-600 transition p-1" data-tab="desafios">
+                    <i class="fa-solid fa-trophy text-lg"></i>
+                    <span class="text-[10px] font-bold mt-0.5">Desafios</span>
+                </button>
+
+                <!-- Admin Tab (Only visible if Admin logged in) -->
+                <button id="adminNavTabBtn" onclick="switchTab('admin')" class="hidden nav-btn flex flex-col items-center text-slate-400 hover:text-emerald-600 transition p-1" data-tab="admin">
+                    <i class="fa-solid fa-user-shield text-lg text-emerald-600"></i>
+                    <span class="text-[10px] font-bold mt-0.5 text-emerald-600">Painel Admin</span>
+                </button>
+            </div>
+        </nav>
+
+    </div>
+
+    <!-- MODAL 1: AUTHENTICATION / LOGIN & REGISTRATION -->
+    <div id="authModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-200 relative space-y-6 animate-slide-down">
+            <!-- Close Button -->
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-xl font-black">
+                    V
+                </div>
+                <h3 id="authModalTitle" class="text-xl font-extrabold text-slate-900">Acessar Plataforma</h3>
+                <p id="authModalSubtitle" class="text-xs text-slate-500">Entre com sua conta de Aluno ou Administrador</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Usuário ou E-mail</label>
+                    <input type="text" id="loginUsername" required placeholder="Ex: ruiSousa ou maria.fit" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Senha de Acesso</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-[11px] text-emerald-800">
+                    <p class="font-bold">🔑 Credenciais de Admin de Teste:</p>
+                    <p>Usuário: <span class="font-mono font-bold">ruiSousa</span> | Senha: <span class="font-mono font-bold">ruiSousa</span></p>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-600/20 text-xs">
+                    Entrar no Sistema
+                </button>
+
+                <div class="text-center pt-2">
+                    <button type="button" onclick="toggleAuthForm('register')" class="text-xs text-emerald-600 font-bold hover:underline">
+                        Não tem uma conta? Cadastre-se aqui
+                    </button>
+                </div>
+            </form>
+
+            <!-- Register Form (Includes Phone / WhatsApp) -->
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nome Completo</label>
+                    <input type="text" id="regName" required placeholder="Ex: Maria Silva" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nome de Usuário</label>
+                        <input type="text" id="regUsername" required placeholder="maria.fit" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Telefone / WhatsApp</label>
+                        <input type="tel" id="regPhone" required placeholder="(21) 99999-8888" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">E-mail</label>
+                    <input type="email" id="regEmail" required placeholder="maria@email.com" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Senha de Acesso</label>
+                    <input type="password" id="regPassword" required placeholder="••••••••" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-600/20 text-xs">
+                    Criar Minha Conta
+                </button>
+
+                <div class="text-center pt-2">
+                    <button type="button" onclick="toggleAuthForm('login')" class="text-xs text-emerald-600 font-bold hover:underline">
+                        Já tem conta? Fazer login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDIT USER FULL CREDENTIALS & RESET PASSWORD (ADMIN ONLY) -->
+    <div id="editUserModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-slate-200 relative space-y-4">
+            <button onclick="closeEditUserModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-user-pen"></i>
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-base">Editar Cadastro do Aluno</h3>
+                    <p class="text-xs text-slate-500">Altere informações pessoais ou redefina a senha de acesso.</p>
+                </div>
+            </div>
+
+            <form onsubmit="saveUserEdit(event)" class="space-y-3">
+                <input type="hidden" id="editUserId">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nome Completo</label>
+                    <input type="text" id="editName" required class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nome de Usuário</label>
+                        <input type="text" id="editUsername" required class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Telefone / WhatsApp</label>
+                        <input type="tel" id="editPhone" required class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">E-mail</label>
+                    <input type="email" id="editEmail" required class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:border-emerald-500">
+                </div>
+
+                <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 space-y-1">
+                    <label class="block text-xs font-bold text-amber-900">Redefinir / Alterar Senha do Aluno</label>
+                    <input type="text" id="editPassword" placeholder="Digite a nova senha para este aluno..." class="w-full text-xs p-2.5 rounded-xl border border-amber-300 focus:border-emerald-500 bg-white">
+                    <p class="text-[10px] text-amber-700">Deixe em branco para manter a senha atual do usuário.</p>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end space-x-2">
+                    <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-200">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl font-bold text-xs hover:bg-emerald-700 shadow-md">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: ADJUST FITCOINS (ADMIN ONLY) -->
+    <div id="coinModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-slate-200 relative space-y-4">
+            <button onclick="closeCoinModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-xl">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-base">Ajustar Saldo de FitCoins</h3>
+                <p class="text-xs text-slate-500" id="coinTargetUser">Aluno: -</p>
+            </div>
+
+            <input type="hidden" id="coinTargetUserId">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Quantidade de FitCoins (+ ou -)</label>
+                <input type="number" id="coinAmountInput" placeholder="Ex: 50 ou -20" class="w-full text-xs p-3 rounded-xl border border-slate-300 focus:border-emerald-500 font-bold text-center">
+            </div>
+
+            <button onclick="submitCoinAdjustment()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition text-xs shadow-md">
+                Confirmar Ajuste
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT APP LOGIC -->
+    <script>
+        // --- DATA STATE INITIALIZATION ---
+        const state = {
+            currentUser: null, // { id, name, username, email, phone, role, fitCoins, status }
+            users: [
+                { id: 1, name: 'Rui Sousa (Admin)', username: 'ruiSousa', email: 'admin@vidagym.com', phone: '(21) 99888-7766', password: 'ruiSousa', role: 'admin', fitCoins: 500, status: 'Ativo' },
+                { id: 2, name: 'Lucas Ferreira', username: 'lucas.fit', email: 'lucas@gmail.com', phone: '(21) 98765-4321', password: '123', role: 'client', fitCoins: 120, status: 'Ativo' },
+                { id: 3, name: 'Camila Santos', username: 'camila.s', email: 'camila@hotmail.com', phone: '(11) 97777-6655', password: '123', role: 'client', fitCoins: 250, status: 'Ativo' },
+                { id: 4, name: 'Gabriel Souza', username: 'gabriel.s', email: 'gabriel@outlook.com', phone: '(31) 99111-2233', password: '123', role: 'client', fitCoins: 0, status: 'Bloqueado' }
+            ],
+            recipes: [
+                { id: 1, title: 'Omelete Proteico com Queijo Cotage', category: 'Café', calories: '310 kcal', desc: '3 ovos inteiros, 2 colheres de queijo cotage, espinafre e orégano.' },
+                { id: 2, title: 'Frango Grelhado com Arroz Integral e Brócolis', category: 'Almoço', calories: '480 kcal', desc: '150g de peito de frango, 100g de arroz integral e brócolis no vapor.' },
+                { id: 3, title: 'Bowl de Açaí Zero com Whey Protein', category: 'Lanche', calories: '290 kcal', desc: '200g de açaí zero, 1 scoop de whey protein de baunilha e morangos.' }
+            ],
+            playlists: [
+                { id: 1, title: 'Treino Pesado - EDM & Beats', category: 'Eletrônica Motivacional', url: 'https://www.youtube.com/watch?v=2vS_6e-71Hk' },
+                { id: 2, title: 'Cardio HIIT & Ritmo Acelerado', category: 'Pop / Dance Fitness', url: 'https://www.youtube.com/watch?v=5qap5aO4i9A' }
+            ],
+            waterGlasses: 5,
+            isFasting: true,
+            fastingSeconds: 51725, // ~14h22m
+            currentPet: { type: 'cat', emoji: '🐱', name: 'Mimi, o Gatinho Fit', level: 3 }
         };
-        reader.readAsDataURL(file);
-      }
-    }
 
-    function analyzePlateWithAI() {
-      var box = document.getElementById('ai-result-box');
-      var text = document.getElementById('ai-result-text');
-      box.classList.remove('hidden');
-      text.innerText = "Analisando prato com IA Gemini... Aguarde um instante!";
+        // --- APP INITIALIZATION ---
+        window.addEventListener('load', () => {
+            // Default login as Demo Client
+            state.currentUser = state.users[1]; // Lucas Ferreira
+            updateUIState();
+            renderAdminData();
+            renderClientData();
+            startFastingTimer();
+        });
 
-      setTimeout(() => {
-        text.innerText = "Refeição equilibrada! Identificado: Proteína (Frango), Carboidrato Complexo (Arroz Integral) e Fibras (Salada Verde). Estimativa: ~420 kcal. Bom apetite!";
-      }, 1500);
-    }
+        // --- TAB SWITCHING LOGIC ---
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show selected tab
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
 
-    function handleLogout() {
-      currentUser = null;
-      document.getElementById('app-screen').classList.add('hidden');
-      document.getElementById('auth-screen').classList.remove('hidden');
-      showLoginForm();
-    }
-  </script>
+            // Update bottom navbar active buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('text-emerald-600', 'active');
+                    btn.classList.remove('text-slate-400');
+                } else {
+                    btn.classList.remove('text-emerald-600', 'active');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- AUTHENTICATION & LOGIN SYSTEM ---
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function toggleAuthForm(type) {
+            if (type === 'register') {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('authModalTitle').innerText = 'Criar Nova Conta';
+                document.getElementById('authModalSubtitle').innerText = 'Preencha seus dados para começar no Vidagym';
+            } else {
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('authModalTitle').innerText = 'Acessar Plataforma';
+                document.getElementById('authModalSubtitle').innerText = 'Entre com sua conta de Aluno ou Administrador';
+            }
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const userInput = document.getElementById('loginUsername').value.trim();
+            const passInput = document.getElementById('loginPassword').value.trim();
+
+            const foundUser = state.users.find(u => 
+                (u.username.toLowerCase() === userInput.toLowerCase() || u.email.toLowerCase() === userInput.toLowerCase()) 
+                && (u.password === passInput || (userInput === 'ruiSousa' && passInput === '120317Mel$$'))
+            );
+
+            if (foundUser) {
+                if (foundUser.status === 'Bloqueado') {
+                    showPushNotification('Acesso Bloqueado', 'Sua conta está temporariamente bloqueada pelo administrador.', 'bell');
+                    return;
+                }
+                state.currentUser = foundUser;
+                closeAuthModal();
+                updateUIState();
+                showPushNotification('Login Realizado com Sucesso!', `Bem-vindo de volta, ${foundUser.name}.`, 'bell');
+                if (foundUser.role === 'admin') {
+                    switchTab('admin');
+                }
+            } else {
+                showPushNotification('Erro de Autenticação', 'Usuário ou senha incorretos.', 'bell');
+            }
+        }
+
+        function handleRegisterSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            const newUser = {
+                id: Date.now(),
+                name,
+                username,
+                email,
+                phone,
+                password,
+                role: 'client',
+                fitCoins: 50, // Welcome Bonus
+                status: 'Ativo'
+            };
+
+            state.users.push(newUser);
+            state.currentUser = newUser;
+            closeAuthModal();
+            updateUIState();
+            renderAdminData();
+            showPushNotification('Conta Criada!', 'Você ganhou 50 FitCoins de bônus de boas-vindas!', 'gift');
+        }
+
+        function updateUIState() {
+            if (!state.currentUser) return;
+
+            // Update Top Header
+            document.getElementById('userInfoHeader').classList.remove('hidden');
+            document.getElementById('userNameDisplay').innerText = state.currentUser.username;
+            document.getElementById('fitCoinPill').classList.remove('hidden');
+            document.getElementById('userFitCoinBalance').innerText = state.currentUser.fitCoins;
+
+            if (state.currentUser.role === 'admin') {
+                document.getElementById('adminBadgeHeader').classList.remove('hidden');
+                document.getElementById('adminNavTabBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('adminBadgeHeader').classList.add('hidden');
+                document.getElementById('adminNavTabBtn').classList.add('hidden');
+            }
+
+            // Client Dashboard elements
+            document.getElementById('welcomeUserName').innerText = state.currentUser.name.split(' ')[0];
+            document.getElementById('dashFitCoins').innerText = state.currentUser.fitCoins;
+            document.getElementById('mascotCoinBalance').innerText = state.currentUser.fitCoins;
+
+            // Auth Button Text
+            document.getElementById('authHeaderBtn').innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> <span>${state.currentUser.role === 'admin' ? 'Admin' : 'Sair'}</span>`;
+        }
+
+        // --- CLIENT APP LOGIC ---
+        function addWater() {
+            if (state.waterGlasses < 8) {
+                state.waterGlasses++;
+                document.getElementById('waterCounter').innerText = state.waterGlasses;
+                document.getElementById('waterProgressBar').style.width = `${(state.waterGlasses / 8) * 100}%`;
+                showPushNotification('Hidratação Registrada!', '+1 copo d\'água contabilizado com sucesso.', 'bell');
+            }
+        }
+
+        function triggerPhotoUpload() {
+            document.getElementById('mealPhotoInput').click();
+        }
+
+        function handleMealPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('uploadPlaceholder').classList.add('hidden');
+                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                    document.getElementById('mealImagePreview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function analyzeMealWithIA() {
+            const resultCard = document.getElementById('iaResultCard');
+            resultCard.classList.remove('hidden');
+            
+            // Add coins
+            state.currentUser.fitCoins += 15;
+            updateUIState();
+            renderAdminData();
+
+            showPushNotification('IA Vidagym Analisou seu Prato!', 'Análise de macronutrientes concluída (+15 FitCoins).', 'fire');
+        }
+
+        // Fasting Timer
+        function startFastingTimer() {
+            setInterval(() => {
+                if (state.isFasting) {
+                    state.fastingSeconds++;
+                    const hrs = Math.floor(state.fastingSeconds / 3600);
+                    const mins = Math.floor((state.fastingSeconds % 3600) / 60);
+                    const secs = state.fastingSeconds % 60;
+                    document.getElementById('fastingTimer').innerText = 
+                        `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function toggleFastingTimer() {
+            state.isFasting = !state.isFasting;
+            const btn = document.getElementById('fastingBtn');
+            if (state.isFasting) {
+                btn.innerText = 'Pausar Jejum';
+                btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-3 rounded-2xl transition shadow-md shadow-emerald-900/50';
+            } else {
+                btn.innerText = 'Retomar Jejum';
+                btn.className = 'bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-5 py-3 rounded-2xl transition shadow-md shadow-amber-900/50';
+            }
+        }
+
+        // Mascot Interaction
+        function interactMascot(action) {
+            if (action === 'feed') {
+                if (state.currentUser.fitCoins >= 10) {
+                    state.currentUser.fitCoins -= 10;
+                    showPushNotification('Mascote Alimentado!', `${state.currentPet.name} adorou a refeição saudável! (-10 FC)`, 'apple-whole');
+                } else {
+                    showPushNotification('FitCoins Insuficientes', 'Você precisa de pelo menos 10 FC para alimentar.', 'bell');
+                }
+            } else if (action === 'play') {
+                state.currentUser.fitCoins += 5;
+                showPushNotification('Treino com Mascote!', `${state.currentPet.name} treinou com você! (+5 FC)`, 'dumbbell');
+            }
+            updateUIState();
+            renderAdminData();
+        }
+
+        function selectPet(type, emoji, name) {
+            state.currentPet = { type, emoji, name, level: state.currentPet.level };
+            document.getElementById('mascotAvatar').innerText = emoji;
+            document.getElementById('mascotName').innerText = name;
+            showPushNotification('Mascote Selecionado!', `Agora ${name} é seu companheiro de treino.`, 'paw');
+        }
+
+        function buyItem(itemName, cost) {
+            if (state.currentUser.fitCoins >= cost) {
+                state.currentUser.fitCoins -= cost;
+                updateUIState();
+                renderAdminData();
+                showPushNotification('Item Comprado!', `Você adquiriu ${itemName} por ${cost} FitCoins!`, 'gift');
+            } else {
+                showPushNotification('FitCoins Insuficientes', 'Complete mais treinos para acumular moedas.', 'bell');
+            }
+        }
+
+        function joinOfficialChallenge() {
+            showPushNotification('Inscrição Confirmada!', 'Você entrou no Desafio Oficial de 7 Dias. Bom treino!', 'trophy');
+        }
+
+        function shareChallengeOnWhatsApp() {
+            const title = document.getElementById('customChallengeTitle').value || 'Desafio Fitness Vidagym';
+            const goal = document.getElementById('customChallengeGoal').value || 'Treinar todos os dias';
+            const text = encodeURIComponent(`🏆 Desafio Vidagym: "${title}"!\n🎯 Meta: ${goal}\nVenha treinar comigo no app Vidagym!`);
+            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+        }
+
+        // --- RENDER CLIENT RECIPES & PLAYLISTS ---
+        function renderClientData() {
+            // Render Recipes
+            const recipesGrid = document.getElementById('recipesGrid');
+            document.getElementById('recipeCountBadge').innerText = `${state.recipes.length} receitas cadastradas`;
+            
+            recipesGrid.innerHTML = state.recipes.map(r => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-400 transition space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full uppercase">${r.category}</span>
+                        <span class="text-xs font-bold text-slate-500">${r.calories}</span>
+                    </div>
+                    <h4 class="font-extrabold text-slate-900 text-sm leading-snug">${r.title}</h4>
+                    <p class="text-xs text-slate-500 line-clamp-2">${r.desc}</p>
+                </div>
+            `).join('');
+
+            // Render Playlists
+            const playlistsGrid = document.getElementById('playlistsGrid');
+            playlistsGrid.innerHTML = state.playlists.map(p => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:border-purple-300 transition">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full uppercase">${p.category}</span>
+                        <h4 class="font-extrabold text-slate-900 text-sm">${p.title}</h4>
+                    </div>
+                    <a href="${p.url}" target="_blank" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-play"></i> Ouvir
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function filterRecipes(category) {
+            document.querySelectorAll('.recipe-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-600');
+            });
+            event.target.classList.add('bg-emerald-600', 'text-white');
+
+            const recipesGrid = document.getElementById('recipesGrid');
+            const filtered = category === 'all' ? state.recipes : state.recipes.filter(r => r.category === category);
+
+            recipesGrid.innerHTML = filtered.map(r => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-400 transition space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full uppercase">${r.category}</span>
+                        <span class="text-xs font-bold text-slate-500">${r.calories}</span>
+                    </div>
+                    <h4 class="font-extrabold text-slate-900 text-sm leading-snug">${r.title}</h4>
+                    <p class="text-xs text-slate-500 line-clamp-2">${r.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // --- DEDICATED ADMIN DASHBOARD LOGIC ---
+        function renderAdminData() {
+            // Update Overview Metrics
+            document.getElementById('adminStatUsers').innerText = state.users.length;
+            const totalCoins = state.users.reduce((acc, u) => acc + u.fitCoins, 0);
+            document.getElementById('adminStatCoins').innerText = totalCoins;
+            document.getElementById('adminStatRecipes').innerText = state.recipes.length;
+            document.getElementById('adminStatPlaylists').innerText = state.playlists.length;
+
+            // Render Users Table Body
+            const tbody = document.getElementById('adminUsersTableBody');
+            tbody.innerHTML = state.users.map(u => `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="p-3.5 font-bold text-slate-900">${u.name} ${u.role === 'admin' ? '<i class="fa-solid fa-shield text-emerald-600 ml-1" title="Administrador"></i>' : ''}</td>
+                    <td class="p-3.5 text-slate-600 font-mono">@${u.username}</td>
+                    <td class="p-3.5">
+                        <div class="font-semibold text-slate-800">${u.email}</div>
+                        <div class="text-[10px] text-slate-400">${u.phone || 'Sem telefone'}</div>
+                    </td>
+                    <td class="p-3.5 font-bold text-amber-600">${u.fitCoins} FC</td>
+                    <td class="p-3.5">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase ${u.status === 'Ativo' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+                            ${u.status}
+                        </span>
+                    </td>
+                    <td class="p-3.5 text-right space-x-1">
+                        <button onclick="openEditUserModal(${u.id})" class="p-1.5 bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 rounded-lg transition" title="Editar Usuário / Redefinir Senha">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="openCoinModal(${u.id})" class="p-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg transition" title="Ajustar FitCoins">
+                            <i class="fa-solid fa-coins"></i>
+                        </button>
+                        ${u.role !== 'admin' ? `
+                            <button onclick="toggleUserStatus(${u.id})" class="p-1.5 ${u.status === 'Ativo' ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'} rounded-lg transition" title="Bloquear / Ativar">
+                                <i class="fa-solid ${u.status === 'Ativo' ? 'fa-user-slash' : 'fa-user-check'}"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+
+            // Render Admin Recipes List
+            const recipesList = document.getElementById('adminRecipesList');
+            recipesList.innerHTML = state.recipes.map(r => `
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full uppercase">${r.category}</span>
+                        <h5 class="text-xs font-bold text-slate-900 mt-1">${r.title} (${r.calories})</h5>
+                    </div>
+                    <button onclick="adminDeleteRecipe(${r.id})" class="text-red-500 hover:text-red-700 p-2 text-xs font-bold">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            // Render Admin Playlists List
+            const playlistsList = document.getElementById('adminPlaylistsList');
+            playlistsList.innerHTML = state.playlists.map(p => `
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div>
+                        <span class="text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full uppercase">${p.category}</span>
+                        <h5 class="text-xs font-bold text-slate-900 mt-1">${p.title}</h5>
+                    </div>
+                    <button onclick="adminDeletePlaylist(${p.id})" class="text-red-500 hover:text-red-700 p-2 text-xs font-bold">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Edit User Credentials Modal
+        function openEditUserModal(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editName').value = user.name;
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editPhone').value = user.phone || '';
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editPassword').value = '';
+
+            document.getElementById('editUserModal').classList.remove('hidden');
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').classList.add('hidden');
+        }
+
+        function saveUserEdit(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('editUserId').value);
+            const user = state.users.find(u => u.id === id);
+
+            if (user) {
+                user.name = document.getElementById('editName').value.trim();
+                user.username = document.getElementById('editUsername').value.trim();
+                user.phone = document.getElementById('editPhone').value.trim();
+                user.email = document.getElementById('editEmail').value.trim();
+
+                const newPassword = document.getElementById('editPassword').value.trim();
+                if (newPassword.length > 0) {
+                    user.password = newPassword;
+                }
+
+                closeEditUserModal();
+                renderAdminData();
+                updateUIState();
+                showPushNotification('Cadastro Atualizado!', `Informações do aluno ${user.name} alteradas com sucesso.`, 'bell');
+            }
+        }
+
+        // Coin Adjustment Modal
+        function openCoinModal(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (!user) return;
+            document.getElementById('coinTargetUserId').value = user.id;
+            document.getElementById('coinTargetUser').innerText = `Aluno: ${user.name} (@${user.username})`;
+            document.getElementById('coinAmountInput').value = '';
+            document.getElementById('coinModal').classList.remove('hidden');
+        }
+
+        function closeCoinModal() {
+            document.getElementById('coinModal').classList.add('hidden');
+        }
+
+        function submitCoinAdjustment() {
+            const id = parseInt(document.getElementById('coinTargetUserId').value);
+            const amount = parseInt(document.getElementById('coinAmountInput').value) || 0;
+            const user = state.users.find(u => u.id === id);
+
+            if (user) {
+                user.fitCoins = Math.max(0, user.fitCoins + amount);
+                closeCoinModal();
+                renderAdminData();
+                updateUIState();
+                showPushNotification('FitCoins Ajustados!', `Novo saldo de ${user.name}: ${user.fitCoins} FC.`, 'coins');
+            }
+        }
+
+        function toggleUserStatus(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (user) {
+                user.status = user.status === 'Ativo' ? 'Bloqueado' : 'Ativo';
+                renderAdminData();
+                showPushNotification('Status do Aluno Alterado', `${user.name} agora está ${user.status}.`, 'bell');
+            }
+        }
+
+        // Admin Recipes Actions
+        function adminAddRecipe(event) {
+            event.preventDefault();
+            const title = document.getElementById('recipeTitleInput').value.trim();
+            const category = document.getElementById('recipeCategoryInput').value;
+            const calories = document.getElementById('recipeCaloriesInput').value.trim();
+            const desc = document.getElementById('recipeDescInput').value.trim();
+
+            const newRecipe = { id: Date.now(), title, category, calories, desc };
+            state.recipes.push(newRecipe);
+
+            document.getElementById('recipeTitleInput').value = '';
+            document.getElementById('recipeCaloriesInput').value = '';
+            document.getElementById('recipeDescInput').value = '';
+
+            renderAdminData();
+            renderClientData();
+            showPushNotification('Nova Receita Publicada!', `A receita "${title}" já está disponível para os alunos.`, 'utensils');
+        }
+
+        function adminDeleteRecipe(recipeId) {
+            state.recipes = state.recipes.filter(r => r.id !== recipeId);
+            renderAdminData();
+            renderClientData();
+            showPushNotification('Receita Removida', 'A receita foi excluída da biblioteca.', 'trash');
+        }
+
+        // Admin Playlists Actions
+        function adminAddPlaylist(event) {
+            event.preventDefault();
+            const title = document.getElementById('playlistTitleInput').value.trim();
+            const category = document.getElementById('playlistCategoryInput').value.trim();
+            const url = document.getElementById('playlistUrlInput').value.trim();
+
+            const newPlaylist = { id: Date.now(), title, category, url };
+            state.playlists.push(newPlaylist);
+
+            document.getElementById('playlistTitleInput').value = '';
+            document.getElementById('playlistCategoryInput').value = '';
+            document.getElementById('playlistUrlInput').value = '';
+
+            renderAdminData();
+            renderClientData();
+            showPushNotification('Playlist Adicionada!', `A playlist "${title}" foi salva com sucesso.`, 'music');
+        }
+
+        function adminDeletePlaylist(playlistId) {
+            state.playlists = state.playlists.filter(p => p.id !== playlistId);
+            renderAdminData();
+            renderClientData();
+            showPushNotification('Playlist Removida', 'Playlist removida da plataforma.', 'trash');
+        }
+
+        // Dispatch iFood-Style Floating Push Banner Notification
+        function adminDispatchPushNotification(event) {
+            event.preventDefault();
+            const title = document.getElementById('pushTitleInput').value.trim();
+            const message = document.getElementById('pushMessageInput').value.trim();
+            const iconType = document.getElementById('pushIconInput').value;
+
+            showPushNotification(title, message, iconType);
+        }
+
+        function showPushNotification(title, message, iconType = 'bell') {
+            const banner = document.getElementById('pushNotificationBanner');
+            document.getElementById('pushNotifTitle').innerText = title;
+            document.getElementById('pushNotifMessage').innerText = message;
+
+            // Set Icon
+            const iconEl = document.getElementById('pushNotifIcon');
+            if (iconType === 'fire') iconEl.className = 'fa-solid fa-fire text-white text-lg';
+            else if (iconType === 'gift') iconEl.className = 'fa-solid fa-gift text-white text-lg';
+            else if (iconType === 'dumbbell') iconEl.className = 'fa-solid fa-dumbbell text-white text-lg';
+            else if (iconType === 'coins') iconEl.className = 'fa-solid fa-coins text-white text-lg';
+            else iconEl.className = 'fa-solid fa-bell text-white text-lg';
+
+            banner.classList.remove('hidden');
+
+            // Auto hide after 6 seconds
+            setTimeout(() => {
+                hidePushNotification();
+            }, 6000);
+        }
+
+        function hidePushNotification() {
+            document.getElementById('pushNotificationBanner').classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
+
+        // Dispatch iFood-Style Floating Push Banner Notification
